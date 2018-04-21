@@ -28,7 +28,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.tokens.Tokenizer;
 
 /**
- * This file is copied from Apache Jena.
+ * This file is copied from Apache Jena v.3.7.0
  *            Olaf Hartig
  *            http://olafhartig.de/
  **/

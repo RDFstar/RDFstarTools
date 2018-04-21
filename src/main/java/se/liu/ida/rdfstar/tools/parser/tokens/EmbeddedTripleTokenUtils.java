@@ -3,6 +3,10 @@ package se.liu.ida.rdfstar.tools.parser.tokens;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public class EmbeddedTripleTokenUtils {
 
 	static public TokenType typeOfEmbeddedTripleTokens = TokenType.KEYWORD;

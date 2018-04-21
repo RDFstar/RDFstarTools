@@ -8,6 +8,10 @@ import org.apache.jena.riot.tokens.Token;
 
 import se.liu.ida.rdfstar.tools.parser.tokens.EmbeddedTripleTokenUtils;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public interface ParserProfileTurtleStar extends ParserProfile
 {
 	static class Helper {

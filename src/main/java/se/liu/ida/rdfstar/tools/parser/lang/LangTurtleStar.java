@@ -19,11 +19,14 @@ import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.sparql.util.Context;
 
 import se.liu.ida.rdfstar.tools.parser.system.ParserProfileTurtleStar;
-import se.liu.ida.rdfstar.tools.parser.system.ParserProfileTurtleStarExtImpl;
 import se.liu.ida.rdfstar.tools.parser.system.ParserProfileTurtleStarWrapperImpl;
 import se.liu.ida.rdfstar.tools.parser.tokens.TokenizerFactory;
 import se.liu.ida.rdfstar.tools.parser.tokens.TokenizerText;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public class LangTurtleStar extends LangTurtle
 {
     /** Display name of Turtle*. */

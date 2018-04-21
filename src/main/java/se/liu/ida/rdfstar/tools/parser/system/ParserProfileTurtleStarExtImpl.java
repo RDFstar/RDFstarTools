@@ -11,6 +11,10 @@ import org.apache.jena.sparql.util.Context;
 
 import se.liu.ida.rdfstar.tools.parser.tokens.EmbeddedTripleTokenUtils;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public class ParserProfileTurtleStarExtImpl extends ParserProfileStd implements ParserProfileTurtleStar
 {
     public ParserProfileTurtleStarExtImpl(FactoryRDF factory, ErrorHandler errorHandler, 

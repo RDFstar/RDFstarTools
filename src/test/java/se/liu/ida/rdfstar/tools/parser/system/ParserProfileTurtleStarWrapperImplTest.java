@@ -17,6 +17,10 @@ import org.junit.Test;
 import se.liu.ida.rdfstar.tools.parser.system.ParserProfileTurtleStar;
 import se.liu.ida.rdfstar.tools.parser.system.ParserProfileTurtleStarWrapperImpl;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public class ParserProfileTurtleStarWrapperImplTest extends AbstractParserProfileTurtleStarTest
 {
 	public ParserProfileTurtleStarWrapperImplTest() {

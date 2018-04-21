@@ -40,8 +40,8 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 /**
  * Tokenizer for all sorts of things RDF-ish
  * 
- * This file is copied from Apache Jena. I have adapted the
- * method parseToken() to enable support for Turtle*.
+ * This file is copied from Apache Jena v.3.7.0
+ * I have adapted the method parseToken() to enable support for Turtle*.
  *            Olaf Hartig
  *            http://olafhartig.de/
  **/

@@ -20,6 +20,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public class LangTurtleStarTest {
 	
 	@Before

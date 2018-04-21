@@ -16,6 +16,10 @@ import org.junit.Test;
 import se.liu.ida.rdfstar.tools.parser.tokens.EmbeddedTripleTokenUtils;
 import se.liu.ida.rdfstar.tools.parser.tokens.TokenizerText;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public class TokenizerTextTest {
 	
 	@Before

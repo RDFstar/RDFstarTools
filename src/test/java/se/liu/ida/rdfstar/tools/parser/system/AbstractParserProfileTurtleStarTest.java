@@ -13,6 +13,10 @@ import org.apache.jena.riot.tokens.Tokenizer;
 import se.liu.ida.rdfstar.tools.parser.system.ParserProfileTurtleStar;
 import se.liu.ida.rdfstar.tools.parser.tokens.TokenizerFactory;
 
+/**
+ * 
+ * @author Olaf Hartig http://olafhartig.de/
+ */
 public abstract class AbstractParserProfileTurtleStarTest
 {
 	final protected ParserProfileTurtleStar parserProfile;
