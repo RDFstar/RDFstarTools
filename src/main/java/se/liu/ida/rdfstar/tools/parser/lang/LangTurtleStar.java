@@ -24,7 +24,10 @@ import se.liu.ida.rdfstar.tools.parser.tokens.TokenizerFactory;
 import se.liu.ida.rdfstar.tools.parser.tokens.TokenizerText;
 
 /**
- * 
+ * This class represents the Turtle* language and performs the
+ * plumbing of  registering Turtle* and its parser extensions
+ * with Jena's RIOT parser framework.
+ *   
  * @author Olaf Hartig http://olafhartig.de/
  */
 public class LangTurtleStar extends LangTurtle

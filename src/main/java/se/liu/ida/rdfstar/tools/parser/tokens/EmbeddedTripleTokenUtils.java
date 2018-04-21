@@ -4,6 +4,7 @@ import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 
 /**
+ * Helper class for {@link Token} objects that represent embedded triples.
  * 
  * @author Olaf Hartig http://olafhartig.de/
  */

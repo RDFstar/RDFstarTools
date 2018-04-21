@@ -9,7 +9,9 @@ import org.apache.jena.riot.tokens.Token;
 import se.liu.ida.rdfstar.tools.parser.tokens.EmbeddedTripleTokenUtils;
 
 /**
- * 
+ * An extension of {@link ParserProfile} to indicate
+ * parser profiles developed to support Turtle*.
+ *  
  * @author Olaf Hartig http://olafhartig.de/
  */
 public interface ParserProfileTurtleStar extends ParserProfile
