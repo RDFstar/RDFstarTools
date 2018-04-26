@@ -33,7 +33,7 @@ public class ParserProfileTurtleStarWrapperImplTest extends AbstractParserProfil
                 IRIResolver.create(),
                 getPrefixMap(),
                 RIOT.getContext().copy(),
-                true, // checking
+                false, // checking
                 false);
 
 		return new ParserProfileTurtleStarWrapperImpl(wrappedProfile);		
