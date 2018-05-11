@@ -3,11 +3,14 @@ package se.liu.ida.rdfstar.tools.sparqlstar.lang;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.lang.SPARQLParser;
@@ -37,6 +40,17 @@ public class ParserSPARQLStarTest {
 	public void registrationOK() {
 		assertTrue( SPARQLParserRegistry.containsParserFactory(ParserSPARQLStar.syntaxSPARQLstar) );
 		assertTrue( SPARQLParserRegistry.parser(ParserSPARQLStar.syntaxSPARQLstar) instanceof ParserSPARQLStar );
+
+		final String queryString = "SELECT * WHERE { <<?s ?p ?o>> ?p2 ?o2 }";
+		QueryFactory.create(queryString, ParserSPARQLStar.syntaxSPARQLstar);
+
+		try {
+			QueryFactory.create(queryString); // This should fail with the
+		}                                     // default SPARQL parser.
+		catch ( QueryParseException e ) {  // Hence, this exception 
+			return;                        // is expected.
+		}
+		fail( "Expected exception not thrown." );
 	}
 
 	@Test
