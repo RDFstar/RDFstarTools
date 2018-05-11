@@ -21,11 +21,11 @@
  * The original file can be found at:
  *   https://github.com/apache/jena/blob/master/jena-arq/Grammar/sparql_11.jj
  * 
- * The extension consists of grammar rules for SPARQL* as documented in
- * Sec.5.1 of https://arxiv.org/pdf/1406.3399.pdf
- * The new grammar rules can be found at the end of this file. The grammar
- * rules tha have been modified can be found by search for any of the names
- * of the new rules.
+ * The extension consists of grammar rules for SPARQL* as documented
+ * in Sec.5.1 of https://arxiv.org/pdf/1406.3399.pdf
+ * The new grammar rules can be found at the end of this file. The
+ * grammar rules that have been modified can be found by search for
+ * any of the names of the new rules.
  * 
  * Olaf Hartig http://olafhartig.de/
  */
@@ -799,7 +799,7 @@ void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 }
 void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
 {
-  s = VarOrTerm()
+  s = VarOrTermOrEmbTP()
   PropertyListPathNotEmpty(s, acc)
 |
   { ElementPathBlock tempAcc = new ElementPathBlock() ; }
@@ -1015,7 +1015,7 @@ Node GraphNode(TripleCollectorMark acc) : { Node n ; }
 }
 Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
 {
-  n = VarOrTerm() { return n ; }
+  n = VarOrTermOrEmbTP() { return n ; }
  |
   n = TriplesNodePath(acc) { return n ; }
 }
@@ -1653,7 +1653,9 @@ TOKEN :
 | < EQ: "=" >
 | < NE: "!=" >
 | < GT: ">" >
+| < GTGT: ">>" >
 | < LT: "<" >
+| < LTLT: "<<" >
 | < LE: "<=" >
 | < GE: ">=" >
 | < BANG: "!" >
@@ -1721,13 +1723,11 @@ Node VarOrTermOrEmbTP() : {Node n = null ; }
 }
 Node EmbTP() : {Node s = null ; Node p = null ; Node o = null ; }
 {
-  <LT>
-  <LT>
+  <LTLT>
   s = VarOrBlankNodeOrIriOrEmbTP()
   p = Verb()
   o = VarOrBlankNodeOrIriOrEmbTP()
-  <GT>
-  <GT>
+  <GTGT>
   { return new Node_Triple(new Triple(s,p,o)) ; }
 }
 Node VarOrBlankNodeOrIriOrEmbTP() : {Node n = null ; String iri ; }

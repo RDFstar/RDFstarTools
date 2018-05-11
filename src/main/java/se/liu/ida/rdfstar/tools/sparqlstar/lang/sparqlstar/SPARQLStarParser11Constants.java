@@ -351,65 +351,69 @@ public interface SPARQLStarParser11Constants {
   /** RegularExpression Id. */
   int GT = 175;
   /** RegularExpression Id. */
-  int LT = 176;
+  int GTGT = 176;
   /** RegularExpression Id. */
-  int LE = 177;
+  int LT = 177;
   /** RegularExpression Id. */
-  int GE = 178;
+  int LTLT = 178;
   /** RegularExpression Id. */
-  int BANG = 179;
+  int LE = 179;
   /** RegularExpression Id. */
-  int TILDE = 180;
+  int GE = 180;
   /** RegularExpression Id. */
-  int COLON = 181;
+  int BANG = 181;
   /** RegularExpression Id. */
-  int SC_OR = 182;
+  int TILDE = 182;
   /** RegularExpression Id. */
-  int SC_AND = 183;
+  int COLON = 183;
   /** RegularExpression Id. */
-  int PLUS = 184;
+  int SC_OR = 184;
   /** RegularExpression Id. */
-  int MINUS = 185;
+  int SC_AND = 185;
   /** RegularExpression Id. */
-  int STAR = 186;
+  int PLUS = 186;
   /** RegularExpression Id. */
-  int SLASH = 187;
+  int MINUS = 187;
   /** RegularExpression Id. */
-  int DATATYPE = 188;
+  int STAR = 188;
   /** RegularExpression Id. */
-  int AT = 189;
+  int SLASH = 189;
   /** RegularExpression Id. */
-  int VBAR = 190;
+  int DATATYPE = 190;
   /** RegularExpression Id. */
-  int CARAT = 191;
+  int AT = 191;
   /** RegularExpression Id. */
-  int FPATH = 192;
+  int VBAR = 192;
   /** RegularExpression Id. */
-  int RPATH = 193;
+  int CARAT = 193;
   /** RegularExpression Id. */
-  int QMARK = 194;
+  int FPATH = 194;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 195;
+  int RPATH = 195;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 196;
+  int QMARK = 196;
   /** RegularExpression Id. */
-  int PN_CHARS = 197;
+  int PN_CHARS_BASE = 197;
   /** RegularExpression Id. */
-  int PN_PREFIX = 198;
+  int PN_CHARS_U = 198;
   /** RegularExpression Id. */
-  int PN_LOCAL = 199;
+  int PN_CHARS = 199;
   /** RegularExpression Id. */
-  int VARNAME = 200;
+  int PN_PREFIX = 200;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 201;
+  int PN_LOCAL = 201;
   /** RegularExpression Id. */
-  int PLX = 202;
+  int VARNAME = 202;
   /** RegularExpression Id. */
-  int HEX = 203;
+  int PN_LOCAL_ESC = 203;
   /** RegularExpression Id. */
-  int PERCENT = 204;
+  int PLX = 204;
   /** RegularExpression Id. */
-  int UNKNOWN = 205;
+  int HEX = 205;
+  /** RegularExpression Id. */
+  int PERCENT = 206;
+  /** RegularExpression Id. */
+  int UNKNOWN = 207;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -592,7 +596,9 @@ public interface SPARQLStarParser11Constants {
     "\"=\"",
     "\"!=\"",
     "\">\"",
+    "\">>\"",
     "\"<\"",
+    "\"<<\"",
     "\"<=\"",
     "\">=\"",
     "\"!\"",
