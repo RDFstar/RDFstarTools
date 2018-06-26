@@ -16,6 +16,11 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCopyBase;
 import org.apache.jena.vocabulary.RDF;
 
+/**
+ * 
+ * @author Jesper Eriksson
+ * @author Amir Hakim
+ */
 public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 {
 	HashMap<Triple,Node> doneNested = new HashMap<Triple,Node>();
