@@ -33,6 +33,7 @@ public class ConverterRDF2RDFStar extends CmdGeneral
 
     protected String inputFilename;
     protected OutputStream outStream;
+    protected boolean outStreamOpened = false;
 
     public static void main(String... argv)
     {
@@ -109,6 +110,7 @@ public class ConverterRDF2RDFStar extends CmdGeneral
 
             try {
             	outStream = new FileOutputStream(outputFile);
+            	outStreamOpened = true;
             }
             catch ( FileNotFoundException e ) {
             	cmdError("The created output file does not exists");
@@ -128,22 +130,33 @@ public class ConverterRDF2RDFStar extends CmdGeneral
             System.err.println(intEx.getMessage()) ;
             if ( intEx.getCause() != null )
             {
-                System.err.println("Cause:") ;
-                intEx.getCause().printStackTrace(System.err) ;
-                System.err.println() ;
+                System.err.println("Cause:");
+                intEx.getCause().printStackTrace(System.err);
+                System.err.println();
             }
-            intEx.printStackTrace(System.err) ;
+            intEx.printStackTrace(System.err);
         }
         catch (JenaException ex)
     	{ 
             ex.printStackTrace();
             throw ex;
         } 
-        catch (CmdException ex) { throw ex ; } 
+        catch (CmdException ex) { throw ex; } 
         catch (Exception ex)
         {
-            throw new CmdException("Exception", ex) ;
+            throw new CmdException("Exception", ex);
         }
+    	finally
+    	{
+    		if ( outStreamOpened ) {
+    			try {
+    				outStream.close();
+    			}
+    			catch ( IOException e ) {
+    				throw new CmdException("Closing the output stream failed: " + e.getMessage(), e );
+    			}
+    		}
+    	}
     }
 
 }
