@@ -28,7 +28,7 @@ import se.liu.ida.rdfstar.tools.serializer.NodeFormatterTurtleStarExtImpl;
  * 
  * @author Jesper Eriksson
  * @author Amir Hakim
- * @author Ebba Lindström
+ * @author Ebba LindstrÃ¶m
  * @author Olaf Hartig
  */
 public class RDF2RDFStar
@@ -42,7 +42,7 @@ public class RDF2RDFStar
 
 	final protected HashMap<Node,Node[]> reifieds = new HashMap<Node,Node[]>();
 
-	public void convert( String inputFilename, OutputStream outStream )
+	public void convert( final String inputFilename, OutputStream outStream )
 	{
 		//First reading of file, to get all reified statements and prefixes
 		PipedRDFIterator<Triple> iter = new PipedRDFIterator<>(BUFFER_SIZE);

@@ -15,19 +15,21 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 
 import arq.cmdline.ModLangParse;
 import arq.cmdline.ModTime;
+import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
 import se.liu.ida.rdfstar.tools.conversion.RDF2RDFStar;
 
 /**
  * 
- * @author Ebba Lindström
+ * @author Ebba LindstrÃ¶m
  * @author Olaf Hartig
  */
 public class ConverterRDF2RDFStar extends CmdGeneral
 {
     protected ModTime modTime                   = new ModTime();
     protected ModLangParse modLangParse         = new ModLangParse();
+    protected ArgDecl argOutputFile    = new ArgDecl(ArgDecl.HasValue, "out", "output", "outfile", "outputfile");
 
     protected String inputFilename;
     protected OutputStream outStream;
@@ -47,9 +49,12 @@ public class ConverterRDF2RDFStar extends CmdGeneral
 
         super.addModule(modTime);
         super.addModule(modLangParse);
+
+        super.getUsage().startCategory("Output options");
+        super.add( argOutputFile, "--out", "Output file (optional, printing to stdout if omitted)" );
     }
 
-    static String usage = ConverterRDF2RDFStar.class.getName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] infile outfile" ;
+    static String usage = ConverterRDF2RDFStar.class.getName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=file] infile" ;
 
     @Override
     protected String getSummary()
@@ -64,9 +69,9 @@ public class ConverterRDF2RDFStar extends CmdGeneral
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs();
-        
-        if ( getNumPositional() != 2 ) {
-        	cmdError("Only one input file and one output file allowed");
+
+        if ( getNumPositional() != 1 ) {
+        	cmdError("Only one input file allowed");
         }
 
         inputFilename = getPositionalArg(0);
@@ -80,27 +85,35 @@ public class ConverterRDF2RDFStar extends CmdGeneral
         	cmdError("The given input file is not a file");
         }
 
-        final String outputFilename = getPositionalArg(1);
-        final File outputFile = new File( outputFilename );
+        // initialize the output stream
+        final String outFileName = getValue(argOutputFile);
+        if ( outFileName == null )
+        {
+        	outStream = System.out; // no output file specified, write to stdout instead
+        }
+        else
+        {
+        	final File outputFile = new File( outFileName );
 
-        // verify that the output file does not yet exist
-        if ( outputFile.exists() ) {
-        	cmdError("The given output file already exists");
-        }
+            // verify that the output file does not yet exist
+            if ( outputFile.exists() ) {
+            	cmdError("The given output file already exists");
+            }
 
-        try {
-        	outputFile.createNewFile();
-        }
-        catch ( IOException e ) {
-        	cmdError("Creating the output file failed: " + e.getMessage() );
-        }
+            try {
+            	outputFile.createNewFile();
+            }
+            catch ( IOException e ) {
+            	cmdError("Creating the output file failed: " + e.getMessage() );
+            }
 
-        try {
-        	outStream = new FileOutputStream(outputFile);
-        }
-        catch ( FileNotFoundException e ) {
-        	cmdError("The created output file does not exists");
-        }
+            try {
+            	outStream = new FileOutputStream(outputFile);
+            }
+            catch ( FileNotFoundException e ) {
+            	cmdError("The created output file does not exists");
+            }
+        }        
     }
 
     @Override
