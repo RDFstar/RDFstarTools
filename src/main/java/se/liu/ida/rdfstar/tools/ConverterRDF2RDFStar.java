@@ -71,7 +71,10 @@ public class ConverterRDF2RDFStar extends CmdGeneral
     {
         super.processModulesAndArgs();
 
-        if ( getNumPositional() != 1 ) {
+        if ( getNumPositional() == 0 ) {
+        	cmdError("No input file specified");
+        }
+        else if ( getNumPositional() > 1 ) {
         	cmdError("Only one input file allowed");
         }
 
