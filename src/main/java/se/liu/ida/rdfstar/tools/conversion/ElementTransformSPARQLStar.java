@@ -23,10 +23,34 @@ import org.apache.jena.vocabulary.RDF;
  */
 public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 {
-	HashMap<Triple,Node> doneNested = new HashMap<Triple,Node>();
+	final HashMap<Triple,Node> doneNested = new HashMap<Triple,Node>();
 
-	//called for elementpathblock
-	public Node unNest(TriplePath triple, ElementPathBlock epb, boolean hasParent)
+	@Override
+	public Element transform(ElementPathBlock el)
+	{
+		final ElementPathBlock epb = new ElementPathBlock() ;
+		for (TriplePath tp : el.getPattern()) {
+			unNestTriplePattern(tp,epb,false);
+		}
+
+		return epb;
+	}
+	
+	@Override
+	public Element transform(ElementBind eb, Var v, Expr expr2)
+	{
+		final ElementPathBlock epb = new ElementPathBlock() ;
+		final NodeValue nv = (NodeValue) eb.getExpr();
+		final Node_Triple nt = (Node_Triple) nv.getNode();
+		final Triple tTemp = ((Node_Triple)nt).get();
+		final TriplePath tp = new TriplePath(tTemp);
+		unNestBindClause(tp,epb,false, v);
+		return epb;
+	}
+
+	// --- helper method ---
+
+	public Node unNestTriplePattern(TriplePath triple, ElementPathBlock epb, boolean hasParent)
 	{	
 		Node s = triple.getSubject();
 		Node p = triple.getPredicate();
@@ -34,20 +58,20 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 
 		if( s instanceof Node_Triple)
 		{
-			Triple tTemp = ((Node_Triple)s).get();
-			TriplePath subTriple = new TriplePath(tTemp);
-			s = unNest(subTriple,epb,true);
+			final Triple tTemp = ((Node_Triple)s).get();
+			final TriplePath subTriple = new TriplePath(tTemp);
+			s = unNestTriplePattern(subTriple,epb,true);
 		}
 		
 		if( o instanceof Node_Triple)
 		{
-			Triple tTemp = ((Node_Triple)o).get();
-			TriplePath objTriple = new TriplePath(tTemp);
-			o = unNest(objTriple, epb,true);
+			final Triple tTemp = ((Node_Triple)o).get();
+			final TriplePath objTriple = new TriplePath(tTemp);
+			o = unNestTriplePattern(objTriple, epb,true);
 		}
 		
 		Node var = NodeFactory.createBlankNode(); 
-		Triple t = new Triple(s,p,o);
+		final Triple t = new Triple(s,p,o);
 
 		if(doneNested.get(t) == null)
 		{
@@ -61,7 +85,7 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 			if(doneNested.get(t) == null)
 			{
 				Node type = RDF.Nodes.type;
-				Node statement = RDF.Nodes.Statement;
+				final Node statement = RDF.Nodes.Statement;
 			
 				Triple t1 = new Triple(var,type, statement);
 				epb.addTriple(t1);
@@ -83,9 +107,8 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 
 		return var;
 	}
-	
-	//Called for elementbind
-	public Node unNest(TriplePath triple, ElementPathBlock epb, boolean hasParent, Var v)
+
+	public Node unNestBindClause(TriplePath triple, ElementPathBlock epb, boolean hasParent, Var v)
 	{
 		Node s = triple.getSubject();
 		Node p = triple.getPredicate();
@@ -93,16 +116,16 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 	
 		if( s instanceof Node_Triple)
 		{
-			Triple tTemp = ((Node_Triple)s).get();
-			TriplePath subTriple = new TriplePath(tTemp);
-			s = unNest(subTriple,epb,true);
+			final Triple tTemp = ((Node_Triple)s).get();
+			final TriplePath subTriple = new TriplePath(tTemp);
+			s = unNestTriplePattern(subTriple,epb,true);
 		}
 		
 		if( o instanceof Node_Triple)
 		{
-			Triple tTemp = ((Node_Triple)o).get();
-			TriplePath objTriple = new TriplePath(tTemp);
-			o = unNest(objTriple, epb,true);
+			final Triple tTemp = ((Node_Triple)o).get();
+			final TriplePath objTriple = new TriplePath(tTemp);
+			o = unNestTriplePattern(objTriple, epb,true);
 		}
 		
 		Node var = null;
@@ -115,7 +138,7 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 			var = NodeFactory.createBlankNode();
 		}
 		
-		Triple t = new Triple(s,p,o);
+		final Triple t = new Triple(s,p,o);
 		if(doneNested.get(t) == null)
 		{
 			epb.addTriple(t);
@@ -126,7 +149,7 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 		if(doneNested.get(t) == null)
 		{
 			Node type = RDF.Nodes.type;
-			Node statement = RDF.Nodes.Statement;
+			final Node statement = RDF.Nodes.Statement;
 				
 			Triple t1 = new Triple(var,type, statement);
 			epb.addTriple(t1);
@@ -145,29 +168,6 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 			doneNested.put(t, var);
 		}
 		return var;
-	}
-
-	@Override
-	public Element transform(ElementPathBlock el)
-	{
-		ElementPathBlock epb = new ElementPathBlock() ;
-		for (TriplePath tp : el.getPattern()) {
-			unNest(tp,epb,false);
-		}
-
-		return epb;
-	}
-	
-	@Override
-	public Element transform(ElementBind eb, Var v, Expr expr2)
-	{
-		ElementPathBlock epb = new ElementPathBlock() ;
-		NodeValue nv = (NodeValue) eb.getExpr();
-		Node_Triple nt = (Node_Triple) nv.getNode();
-		Triple tTemp = ((Node_Triple)nt).get();
-		TriplePath tp = new TriplePath(tTemp);
-		unNest(tp,epb,false, v);
-		return epb;
 	}
 
 }
