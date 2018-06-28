@@ -1,0 +1,4 @@
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:a ex:b "1999-08-16"^^xsd:date .
