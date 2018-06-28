@@ -41,7 +41,7 @@ public class LangTurtleStarTest {
 		assertTrue( RDFParserRegistry.isRegistered(LangTurtleStar.TURTLESTAR) );
 		assertTrue( RDFParserRegistry.isTriples(LangTurtleStar.TURTLESTAR) );
 		assertEquals( LangTurtleStar.TURTLESTAR, RDFLanguages.fileExtToLang("ttls") );
-		assertEquals( LangTurtleStar.TURTLESTAR, RDFLanguages.filenameToLang("simple.ttls") );		
+		assertEquals( LangTurtleStar.TURTLESTAR, RDFLanguages.filenameToLang("OneNestedTriple1.ttls") );		
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class LangTurtleStarTest {
 
 	@Test
 	public void fileParse1() {
-		final String filename = "simple.ttls";
+		final String filename = "OneNestedTriple1.ttls";
         final Graph g = loadGraphFromTurtleStarFile(filename);
 
         assertEquals( 1, g.size() );

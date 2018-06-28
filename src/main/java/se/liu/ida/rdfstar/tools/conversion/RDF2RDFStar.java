@@ -3,8 +3,6 @@ package se.liu.ida.rdfstar.tools.conversion;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -47,29 +45,18 @@ public class RDF2RDFStar
 		//First reading of file, to get all reified statements and prefixes
 		PipedRDFIterator<Triple> iter = new PipedRDFIterator<>(BUFFER_SIZE);
 	    final PipedRDFStream<Triple> inputStream = new PipedTriplesStream(iter);
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		Runnable parser = new Runnable() {
-				  
-		            @Override
-		            public void run() {
-		            	
-		            	RDFParser.create()
-					       .labelToNode( LabelToNode.createUseLabelEncoded() )
-					       .source(inputFilename)
-					       //.lang(RDFLanguages.TURTLE)
-					       .build()
-					       .parse(inputStream);
-		            }
-		};
-		        
-		executor.submit(parser);
+
+	    RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
+					      .source(inputFilename)
+					      //.lang(RDFLanguages.TURTLE)
+					      .build()
+					      .parse(inputStream);
 		
 		//Get all reified statements and save in hashmap.
 		while (iter.hasNext()) {	
 	            Triple next = iter.next();
 	        	getReified(next);
 	      }
-		executor.shutdown();
 
 		IndentedWriter iw = new IndentedWriter(outStream);
 		NodeFormatter nttl = new NodeFormatterTurtleStarExtImpl(null,iter.getPrefixes());
@@ -80,28 +67,18 @@ public class RDF2RDFStar
 		//second reading of file starts.
 		PipedRDFIterator<Triple> iter2 = new PipedRDFIterator<>(BUFFER_SIZE);
 	    final PipedRDFStream<Triple> inputStream2 = new PipedTriplesStream(iter2);
-		ExecutorService executor2 = Executors.newSingleThreadExecutor();
-		Runnable parser2 = new Runnable() {
 
-            @Override
-            public void run() {
-            	
-            	RDFParser.create()
-			       .labelToNode( LabelToNode.createUseLabelEncoded() )
-			       .source(inputFilename)
-			       //.lang(RDFLanguages.TURTLE)
-			       .build()
-			       .parse(inputStream2);
-            }
-        };
-        
-        executor2.submit(parser2);
+	    RDFParser.create()
+			     .labelToNode( LabelToNode.createUseLabelEncoded() )
+			     .source(inputFilename)
+			     //.lang(RDFLanguages.TURTLE)
+			     .build()
+			     .parse(inputStream2);
 		
 		//Here we print all triples	
         printTriples(iter2.getPrefixes(), iw, nttl, iter2);
         iw.write(" .");
         iw.flush();
-		executor2.shutdown();
 	}
 
 	//Prints all triples in pretty format, one triple at the time.
