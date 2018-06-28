@@ -188,7 +188,7 @@ public class LangTurtleStarTest {
 
 	// ---- helpers ----
 
-	protected Graph createGraphFromTurtleStarSnippet( String snippet ) {
+	static public Graph createGraphFromTurtleStarSnippet( String snippet ) {
 		final StringReader reader = new StringReader(snippet);
         final Graph g = ModelFactory.createDefaultModel().getGraph();
         final StreamRDF dest = StreamRDFLib.graph(g);
