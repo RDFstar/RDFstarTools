@@ -6,7 +6,3 @@
 
 
 ex:bob foaf:knows << ex:alice foaf:knows <<ex:bob dct:created ex:book >> >> .
-
-#Gets the following error:
-# 573 [main] ERROR org.apache.jena.riot - [line: 1, col: 2 ] Out of place: [DOT]
-#does not create a ttl-String of the triple, only one dot before the error occurs

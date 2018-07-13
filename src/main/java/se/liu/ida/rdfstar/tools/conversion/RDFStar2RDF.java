@@ -3,8 +3,7 @@ package se.liu.ida.rdfstar.tools.conversion;
 
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -28,20 +27,19 @@ import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
  * 
  * @author Jesper Eriksson
  * @author Amir Hakim
- * @author Ebba Lindström
+ * @author Ebba LindstrÃ¶m
+ * @author Olaf Hartigs
  */
 
 public class RDFStar2RDF {
 
-	public static HashMap<Triple,Node> bNodes = new HashMap<Triple,Node>();
-	protected static Node lastSubject = NodeFactory.createBlankNode(); //used to create turtle blocks
-	protected static Node lastPredicate = NodeFactory.createBlankNode(); //used to create turtle blocks
-	protected static boolean first_lap = true;
 	protected static int BUFFER_SIZE = 16000; //Recommended size is 10% of the file size
-	
+
+	protected boolean first_lap;
+	protected Node lastSubject; //used to create turtle blocks
+	protected Node lastPredicate; //used to create turtle blocks
+
 	public void convert( final String inputFilename, OutputStream outStream ) {
-		
-		LangTurtleStar.init();
 		
 		//Creates iterator to read triples in a streaming fashion.
 		//First lap is only to save all prefixes.
@@ -64,37 +62,32 @@ public class RDFStar2RDF {
 		RiotLib.writeBase(iw, iter.getBaseIri());
 
 		//Creates iterator to read triples in a streaming fashion.
-		PipedRDFIterator<Triple> iter2 = new PipedRDFIterator<>(BUFFER_SIZE);
+		final PipedRDFIterator<Triple> iter2 = new PipedRDFIterator<>(BUFFER_SIZE);
 	    final PipedRDFStream<Triple> inputStream2 = new PipedTriplesStream(iter2);
-		ExecutorService executor2 = Executors.newSingleThreadExecutor();
-		
-		Runnable parser2 = new Runnable() {
-			  
-	            @Override
-	            public void run() {
-	            	
-	            	RDFParser.create()
-				       .labelToNode( LabelToNode.createUseLabelEncoded() )				  
-				       .source(inputFilename)
-				       .checking(false)
-				       .build()
-				       .parse(inputStream2);
-	            }
-	        };
-	    executor2.submit(parser2);
+	    RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )				  
+				          .source(inputFilename)
+				          .checking(false)
+					      .lang(LangTurtleStar.TURTLESTAR)
+				          .build()
+				          .parse(inputStream2);
+
+		final Map<Triple,Node> bNodes = new HashMap<Triple,Node>();
+		first_lap = true;
+		lastSubject = NodeFactory.createBlankNode();
+		lastPredicate = NodeFactory.createBlankNode();
+
 		//Send one triple at the time to print function to print into Turtle format.
 		while (iter2.hasNext()) {	
             Triple next = iter2.next();
             
-        	printTriples(next, iw, nttl, false);	
+        	printTriples(next, bNodes, iw, nttl, false);	
       }
 		iw.write(" .");
 		iw.flush();
-		executor2.shutdown();
 	}
 	
 	//Recursive function to unnest triples and print in pretty format. One triple at the time.
-		public static Node printTriples(Triple triple, IndentedWriter iw, NodeFormatter nttl, boolean hasParent)
+		protected Node printTriples(Triple triple, Map<Triple,Node> bNodes, IndentedWriter iw, NodeFormatter nttl, boolean hasParent)
 		{
 			Node s = triple.getSubject();
 			Node p = triple.getPredicate();
@@ -104,13 +97,15 @@ public class RDFStar2RDF {
 	        if ( s instanceof Node_Triple )
 			{
 	        	Triple subTriple = ((Node_Triple)s).get();
-	        	s = printTriples(subTriple, iw, nttl, true);
+	        	s = printTriples(subTriple, bNodes, iw, nttl, true);
+	        	first_lap = false;
 			}
 	       
 	        if( o instanceof Node_Triple)
 	        {
 	        	Triple objTriple = ((Node_Triple)o).get();
-	        	o = printTriples(objTriple, iw, nttl, true);
+	        	o = printTriples(objTriple, bNodes, iw, nttl, true);
+	        	first_lap = false;
 	        }
 	        
 	        
@@ -180,7 +175,7 @@ public class RDFStar2RDF {
 				}
 	        	else
 	        	{
-	        		if(!first_lap)
+	        		if(lastSubject.matches(o) || !first_lap)
 	        			iw.write(" .\n");
 	        		else
 	        			first_lap = false;

@@ -29,7 +29,7 @@ import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStarTest;
 
 /**
  * 
- * @author Ebba Lindström
+ * @author Ebba LindstrÃ¶m
  */
 
 public class RDFStar2RDFTest {
@@ -156,7 +156,6 @@ public class RDFStar2RDFTest {
         RDFParser.create()
                  .source(reader)
                  .lang(Lang.TURTLE)
-                 .checking(false)  // !!!!
                  .parse(dest);
 
 		return g;
