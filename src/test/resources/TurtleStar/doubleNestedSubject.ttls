@@ -1,0 +1,19 @@
+@prefix ex: <http://example.com/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<< << ex:bob foaf:created ex:book >> foaf:knows ex:alice >> dct:source ex:otherbook .
+
+
+#at the moment it creates this, which is not working:
+#
+#_:Bc9ef8f5aX2D647dX2D4cf5X2Daa74X2Db6450aa22fe4 rdf:type rdf:Statement ;
+#                                        rdf:subject ex:bob ;
+#                                        rdf:predicate foaf:created ;
+#                                        rdf:object ex:book_:B515f3f87X2Df2e0X2D4fe6X2D875cX2Dab9359ca5119 rdf:type rdf:Statement ;
+#                                        rdf:subject _:Bc9ef8f5aX2D647dX2D4cf5X2Daa74X2Db6450aa22fe4 ;
+#                                        rdf:predicate foaf:knows ;
+#                                        rdf:object ex:alice ;
+#                                        dct:source ex:otherbook .

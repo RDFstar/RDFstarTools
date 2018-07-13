@@ -29,7 +29,7 @@ public class ConverterRDFStar2RDF extends CmdGeneral {
 
 	protected ModTime modTime                   = new ModTime();
     protected ModLangParse modLangParse         = new ModLangParse();
-    //what is this below used for?
+
     protected ArgDecl argOutputFile    = new ArgDecl(ArgDecl.HasValue, "out", "output", "outfile", "outputfile");
 
     protected String inputFilename;
@@ -47,7 +47,6 @@ public class ConverterRDFStar2RDF extends CmdGeneral {
         super.addModule(modTime);
         super.addModule(modLangParse);
         
-        //Add more things here?
 
 	}
 	

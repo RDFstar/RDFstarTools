@@ -1,0 +1,12 @@
+@prefix ex: <http://example.com/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+
+ex:bob foaf:knows << ex:alice foaf:knows <<ex:bob dct:created ex:book >> >> .
+
+#Gets the following error:
+# 573 [main] ERROR org.apache.jena.riot - [line: 1, col: 2 ] Out of place: [DOT]
+#does not create a ttl-String of the triple, only one dot before the error occurs

@@ -1,0 +1,23 @@
+@prefix ex: <http://example.com/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+_:b0 rdf:type rdf:Statement .
+_:b0 rdf:subject ex:book .
+_:b0 rdf:predicate dct:creator .
+_:b0 rdf:object ex:alice .
+
+
+_:b1 rdf:type rdf:Statement .
+_:b1 rdf:subject ex:alice .
+_:b1 rdf:predicate dct:created .
+_:b1 rdf:object ex:book .
+
+_:b0 dct:requires _:b1 .
+
+# Expected Turtle* representation:
+#
+# << ex:book dct:creator ex:alice >> dct:requires << ex:alice dct:created ex:book >> .
+#
