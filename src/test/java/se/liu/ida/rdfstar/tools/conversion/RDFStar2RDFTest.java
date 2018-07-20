@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Iterator;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node_Triple;
@@ -41,8 +42,8 @@ public class RDFStar2RDFTest {
 	@After
 	public void tearDown() {
 	}
+
 	
-	//this one works
 	@Test
 	public void noReification()
 	{
@@ -51,16 +52,10 @@ public class RDFStar2RDFTest {
 
         assertEquals( 1, g.size() );
         
-        //this should be used for all tests, only Turtle* can contain triples in subject or object, not wanted RDF-data
-        final Triple t = g.find().next();
-        assertFalse( t.getSubject() instanceof Node_Triple );
-        assertFalse( t.getPredicate() instanceof Node_Triple );
-        assertFalse( t.getObject() instanceof Node_Triple );
+        verifyNoNesting(g);
         
-        assertEquals( RDF.Nodes.type, t.getPredicate() );
 	}
 	
-	//this one works
 	@Test
 	public void nestedSubject() {
 		final String filename = "nestedSubject.ttls";
@@ -68,15 +63,10 @@ public class RDFStar2RDFTest {
         
         assertEquals( 5, g.size() );
         
-        final Triple t = g.find().next();
-        assertFalse( t.getSubject() instanceof Node_Triple );
-        assertFalse( t.getPredicate() instanceof Node_Triple );
-        assertFalse( t.getObject() instanceof Node_Triple );
+        verifyNoNesting(g);
 		
 	}
 	
-	//this one does not work! "Triples not terminated by DOT"
-	//will work if other code before but otherwise not
 	@Test
 	public void nestedObject() {
 		final String filename = "nestedObject.ttls";
@@ -84,13 +74,9 @@ public class RDFStar2RDFTest {
         
         assertEquals( 5, g.size() );
         
-        final Triple t = g.find().next();
-        assertFalse( t.getSubject() instanceof Node_Triple );
-        assertFalse( t.getPredicate() instanceof Node_Triple );
-        assertFalse( t.getObject() instanceof Node_Triple );
+        verifyNoNesting(g);
 		
 	}	
-	//same here,  "Triples not terminated by DOT"
 	@Test
 	public void nestedSubjectAndObject() {
 		final String filename = "nestedSubjectAndObject.ttls";
@@ -98,10 +84,7 @@ public class RDFStar2RDFTest {
         
         assertEquals( 9, g.size() );
         
-        final Triple t = g.find().next();
-        assertFalse( t.getSubject() instanceof Node_Triple );
-        assertFalse( t.getPredicate() instanceof Node_Triple );
-        assertFalse( t.getObject() instanceof Node_Triple );
+        verifyNoNesting(g);
 		
 	}
 	
@@ -110,12 +93,9 @@ public class RDFStar2RDFTest {
 		final String filename = "doubleNestedSubject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
 		
-        assertEquals( 8, g.size() );
+        assertEquals( 9, g.size() );
         
-        final Triple t = g.find().next();
-        assertFalse( t.getSubject() instanceof Node_Triple );
-        assertFalse( t.getPredicate() instanceof Node_Triple );
-        assertFalse( t.getObject() instanceof Node_Triple );
+        verifyNoNesting(g);
 	}
 	
 	@Test
@@ -123,12 +103,9 @@ public class RDFStar2RDFTest {
 		final String filename = "doubleNestedObject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
         
-        assertEquals( 5, g.size() );
+        assertEquals( 9, g.size() );
         
-        final Triple t = g.find().next();
-        assertFalse( t.getSubject() instanceof Node_Triple );
-        assertFalse( t.getPredicate() instanceof Node_Triple );
-        assertFalse( t.getObject() instanceof Node_Triple );
+        verifyNoNesting(g);
 		
 	}
 	
@@ -140,8 +117,6 @@ public class RDFStar2RDFTest {
 
 		new RDFStar2RDF().convert(fullFilename, os);
 		final String result = os.toString();
-		//TODO: delete the print when done with testing
-		System.out.println(result);
 		try {
 			os.close();
 		}
@@ -159,6 +134,18 @@ public class RDFStar2RDFTest {
                  .parse(dest);
 
 		return g;
+	}
+	
+	protected void verifyNoNesting(Graph g) {
+		
+		final Iterator<Triple> iter = g.find();
+		
+		while (iter.hasNext()) {
+		Triple t = iter.next();
+        assertFalse( t.getSubject() instanceof Node_Triple );
+        assertFalse( t.getPredicate() instanceof Node_Triple );
+        assertFalse( t.getObject() instanceof Node_Triple );
+		}
 	}
 
 }
