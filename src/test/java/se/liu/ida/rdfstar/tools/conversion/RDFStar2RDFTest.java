@@ -2,7 +2,6 @@ package se.liu.ida.rdfstar.tools.conversion;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
@@ -23,10 +22,6 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import jena.turtle;
-import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
-import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStarTest;
 
 /**
  * 
@@ -51,64 +46,66 @@ public class RDFStar2RDFTest {
         final Graph g = convertAndLoadIntoGraph(filename);
 
         assertEquals( 1, g.size() );
-        
+
         verifyNoNesting(g);
-        
 	}
 	
 	@Test
-	public void nestedSubject() {
+	public void nestedSubject()
+	{
 		final String filename = "nestedSubject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
-        
+
         assertEquals( 5, g.size() );
-        
+
         verifyNoNesting(g);
-		
 	}
 	
 	@Test
-	public void nestedObject() {
+	public void nestedObject()
+	{
 		final String filename = "nestedObject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
-        
+
         assertEquals( 5, g.size() );
-        
+
         verifyNoNesting(g);
-		
-	}	
+	}
+
 	@Test
-	public void nestedSubjectAndObject() {
+	public void nestedSubjectAndObject()
+	{
 		final String filename = "nestedSubjectAndObject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
-        
+
         assertEquals( 9, g.size() );
-        
+
         verifyNoNesting(g);
-		
 	}
-	
+
 	@Test
-	public void doubleNestedSubject() {
+	public void doubleNestedSubject()
+	{
 		final String filename = "doubleNestedSubject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
-		
+
         assertEquals( 9, g.size() );
-        
+
         verifyNoNesting(g);
 	}
-	
+
 	@Test
-	public void doubleNestedObject() {
+	public void doubleNestedObject()
+	{
 		final String filename = "doubleNestedObject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
-        
+
         assertEquals( 9, g.size() );
-        
+
         verifyNoNesting(g);
-		
 	}
-	
+
+
 	// ---- helpers ----
 
 	protected Graph convertAndLoadIntoGraph( String filename ) {
@@ -136,15 +133,15 @@ public class RDFStar2RDFTest {
 		return g;
 	}
 	
-	protected void verifyNoNesting(Graph g) {
-		
+	protected void verifyNoNesting(Graph g)
+	{		
 		final Iterator<Triple> iter = g.find();
 		
 		while (iter.hasNext()) {
-		Triple t = iter.next();
-        assertFalse( t.getSubject() instanceof Node_Triple );
-        assertFalse( t.getPredicate() instanceof Node_Triple );
-        assertFalse( t.getObject() instanceof Node_Triple );
+			final Triple t = iter.next();
+			assertFalse( t.getSubject() instanceof Node_Triple );
+			assertFalse( t.getPredicate() instanceof Node_Triple );
+			assertFalse( t.getObject() instanceof Node_Triple );
 		}
 	}
 
