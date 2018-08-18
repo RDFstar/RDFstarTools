@@ -13,27 +13,17 @@ import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.DCTerms;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStarTest;
 
 /**
  * 
+ * @author Ebba LindstrÃ¶m
  * @author Olaf Hartig
- * @author Ebba Lindström
  */
 public class RDF2RDFStarTest
-{	
-	@Before
-	public void setup() {
-	}
-
-	@After
-	public void tearDown() {
-	}
-
+{
 	@Test
 	public void noReification()
 	{
@@ -100,11 +90,11 @@ public class RDF2RDFStarTest
         assertFalse( t.getPredicate() instanceof Node_Triple );
         assertTrue( t.getObject() instanceof Node_Triple );
         
-        Triple et = ( (Node_Triple) t.getSubject() ).get();
-        assertEquals( DCTerms.creator.asNode(), et.getPredicate() );
+        final Triple st = ( (Node_Triple) t.getSubject() ).get();
+        assertEquals( DCTerms.creator.asNode(), st.getPredicate() );
         
-        et = ( (Node_Triple) t.getObject() ).get();
-        assertEquals( DCTerms.created.asNode(), et.getPredicate() );
+        final Triple ot = ( (Node_Triple) t.getObject() ).get();
+        assertEquals( DCTerms.created.asNode(), ot.getPredicate() );
 	}
 
 	@Test
@@ -154,7 +144,8 @@ public class RDF2RDFStarTest
 
 	// ---- helpers ----
 
-	protected Graph convertAndLoadIntoGraph( String filename ) {
+	protected Graph convertAndLoadIntoGraph( String filename )
+	{
 		final String fullFilename = getClass().getResource("/RDF/"+filename).getFile();
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 

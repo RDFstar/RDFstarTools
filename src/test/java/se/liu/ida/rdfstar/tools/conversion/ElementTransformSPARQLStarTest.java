@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author Ebba Lindström
+ * @author Olaf Hartig
  */
 public class ElementTransformSPARQLStarTest
 {	
