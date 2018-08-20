@@ -38,11 +38,11 @@ public class ParserSPARQLStarTest {
 
 	@Test
 	public void registrationOK() {
-		assertTrue( SPARQLParserRegistry.containsParserFactory(ParserSPARQLStar.syntaxSPARQLstar) );
-		assertTrue( SPARQLParserRegistry.parser(ParserSPARQLStar.syntaxSPARQLstar) instanceof ParserSPARQLStar );
+		assertTrue( SPARQLParserRegistry.containsParserFactory(SPARQLStar.syntax) );
+		assertTrue( SPARQLParserRegistry.parser(SPARQLStar.syntax) instanceof ParserSPARQLStar );
 
 		final String queryString = "SELECT * WHERE { <<?s ?p ?o>> ?p2 ?o2 }";
-		QueryFactory.create(queryString, ParserSPARQLStar.syntaxSPARQLstar);
+		QueryFactory.create(queryString, SPARQLStar.syntax);
 
 		try {
 			QueryFactory.create(queryString); // This should fail with the

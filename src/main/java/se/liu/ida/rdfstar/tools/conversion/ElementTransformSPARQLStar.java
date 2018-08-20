@@ -13,13 +13,16 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementBind;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransform;
 import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCopyBase;
 import org.apache.jena.vocabulary.RDF;
 
 /**
+ * The {@link ElementTransform} used by {@link SPARQLStar2SPARQL}.
  * 
  * @author Jesper Eriksson
  * @author Amir Hakim
+ * @author Olaf Hartig
  */
 public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 {

@@ -14,7 +14,7 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.resultset.ResultSetException;
 
 import se.liu.ida.rdfstar.tools.conversion.SPARQLStar2SPARQL;
-import se.liu.ida.rdfstar.tools.sparqlstar.lang.ParserSPARQLStar;
+import se.liu.ida.rdfstar.tools.sparqlstar.lang.SPARQLStar;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModQueryOut;
 
@@ -105,7 +105,7 @@ public class ConverterSPARQLStar2SPARQL extends CmdGeneral
 
     protected class MyModQueryIn extends ModQueryIn
     {
-    	public MyModQueryIn() { super(ParserSPARQLStar.syntaxSPARQLstar); }
+    	public MyModQueryIn() { super(SPARQLStar.syntax); }
 
     	/** do not register 'querySyntaxDecl' as done in the super class */
         @Override

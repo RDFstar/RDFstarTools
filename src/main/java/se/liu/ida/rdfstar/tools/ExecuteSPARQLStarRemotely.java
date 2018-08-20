@@ -20,7 +20,7 @@ import arq.cmdline.ModResultsOut;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
 import se.liu.ida.rdfstar.tools.conversion.SPARQLStar2SPARQL;
-import se.liu.ida.rdfstar.tools.sparqlstar.lang.ParserSPARQLStar;
+import se.liu.ida.rdfstar.tools.sparqlstar.lang.SPARQLStar;
 
 /*
  * Takes SPARQL* query and remote endpoint as input, and returns the queried RDF-data as output.
@@ -134,7 +134,7 @@ public class ExecuteSPARQLStarRemotely extends CmdARQ{
 
 	 protected class MyModQueryIn extends ModQueryIn
 	    {
-	    	public MyModQueryIn() { super(ParserSPARQLStar.syntaxSPARQLstar); }
+	    	public MyModQueryIn() { super(SPARQLStar.syntax); }
 
 	    	/** do not register 'querySyntaxDecl' as done in the super class */
 	        @Override
