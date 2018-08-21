@@ -1,6 +1,7 @@
 package se.liu.ida.rdfstar.tools.conversion;
 
 import org.apache.jena.query.Query;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 
 /**
@@ -14,6 +15,8 @@ public class SPARQLStar2SPARQL
 	public Query convert( Query query )
 	{
 		final ElementTransformSPARQLStar etss = new ElementTransformSPARQLStar();
-		return QueryTransformOps.transform(query, etss);
+		final Query convertedQuery = QueryTransformOps.transform(query, etss);
+		convertedQuery.setSyntax(Syntax.syntaxSPARQL);
+		return convertedQuery;
 	}
 }
