@@ -1,11 +1,13 @@
 package se.liu.ida.rdfstar.tools.conversion;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
@@ -26,7 +28,9 @@ import org.apache.jena.vocabulary.RDF;
  */
 public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 {
-	final HashMap<Triple,Node> doneNested = new HashMap<Triple,Node>();
+	final protected HashMap<Triple,Node> doneNested = new HashMap<Triple,Node>();
+	final protected int randomVarID = new Random().nextInt();
+	protected int anonVarCounter = 0;
 
 	@Override
 	public Element transform(ElementPathBlock el)
@@ -42,13 +46,19 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 	@Override
 	public Element transform(ElementBind eb, Var v, Expr expr2)
 	{
-		final ElementPathBlock epb = new ElementPathBlock() ;
-		final NodeValue nv = (NodeValue) eb.getExpr();
-		final Node_Triple nt = (Node_Triple) nv.getNode();
-		final Triple tTemp = ((Node_Triple)nt).get();
-		final TriplePath tp = new TriplePath(tTemp);
-		unNestBindClause(tp,epb,false, v);
-		return epb;
+		if (    ( eb.getExpr() instanceof NodeValue )
+		     && ( ((NodeValue) eb.getExpr()).getNode() instanceof Node_Triple ) )
+		{
+			final NodeValue nv = (NodeValue) eb.getExpr();
+			final Node_Triple nt = (Node_Triple) nv.getNode();
+			final Triple tTemp = ((Node_Triple)nt).get();
+			final TriplePath tp = new TriplePath(tTemp);
+			final ElementPathBlock epb = new ElementPathBlock();
+			unNestBindClause(tp,epb,false, v);
+			return epb;
+		}
+		else
+			return super.transform(eb, v, expr2);
 	}
 
 	// --- helper method ---
@@ -72,8 +82,9 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 			final TriplePath objTriple = new TriplePath(tTemp);
 			o = unNestTriplePattern(objTriple, epb,true);
 		}
-		
-		Node var = NodeFactory.createBlankNode(); 
+
+		//Node var = NodeFactory.createBlankNode();
+		Node var = NodeFactory.createVariable( ARQConstants.allocVarAnonMarker + randomVarID + anonVarCounter++ ); 
 		final Triple t = new Triple(s,p,o);
 
 		if(doneNested.get(t) == null)
