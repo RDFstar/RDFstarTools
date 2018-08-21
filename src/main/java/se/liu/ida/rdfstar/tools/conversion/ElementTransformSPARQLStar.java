@@ -33,155 +33,115 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 	protected int anonVarCounter = 0;
 
 	@Override
-	public Element transform(ElementPathBlock el)
+	public Element transform( ElementPathBlock el )
 	{
-		final ElementPathBlock epb = new ElementPathBlock() ;
-		for (TriplePath tp : el.getPattern()) {
-			unNestTriplePattern(tp,epb,false);
+		final ElementPathBlock epb = new ElementPathBlock();
+
+		for ( TriplePath tp : el.getPattern() ) {
+			unNestTriplePattern(tp.asTriple(), epb, false);
 		}
 
 		return epb;
 	}
 	
 	@Override
-	public Element transform(ElementBind eb, Var v, Expr expr2)
+	public Element transform( ElementBind eb, Var v, Expr expr2 )
 	{
 		if (    ( eb.getExpr() instanceof NodeValue )
 		     && ( ((NodeValue) eb.getExpr()).getNode() instanceof Node_Triple ) )
 		{
 			final NodeValue nv = (NodeValue) eb.getExpr();
 			final Node_Triple nt = (Node_Triple) nv.getNode();
-			final Triple tTemp = ((Node_Triple)nt).get();
-			final TriplePath tp = new TriplePath(tTemp);
+			final Triple tp = ( (Node_Triple) nt ).get();
+
 			final ElementPathBlock epb = new ElementPathBlock();
-			unNestBindClause(tp,epb,false, v);
+			unNestBindClause(tp, epb, v);
 			return epb;
 		}
 		else
 			return super.transform(eb, v, expr2);
 	}
 
-	// --- helper method ---
 
-	public Node unNestTriplePattern(TriplePath triple, ElementPathBlock epb, boolean hasParent)
+	// --- helper methods ---
+
+	protected Node unNestTriplePattern( Triple tp, ElementPathBlock epb, boolean hasParent )
 	{	
-		Node s = triple.getSubject();
-		Node p = triple.getPredicate();
-		Node o = triple.getObject();
+		Node s = tp.getSubject();
+		Node p = tp.getPredicate();
+		Node o = tp.getObject();
 
-		if( s instanceof Node_Triple)
+		if ( s instanceof Node_Triple )
 		{
-			final Triple tTemp = ((Node_Triple)s).get();
-			final TriplePath subTriple = new TriplePath(tTemp);
-			s = unNestTriplePattern(subTriple,epb,true);
-		}
-		
-		if( o instanceof Node_Triple)
-		{
-			final Triple tTemp = ((Node_Triple)o).get();
-			final TriplePath objTriple = new TriplePath(tTemp);
-			o = unNestTriplePattern(objTriple, epb,true);
+			final Triple sTP = ( (Node_Triple) s ).get();
+			s = unNestTriplePattern(sTP, epb, true);
 		}
 
-		//Node var = NodeFactory.createBlankNode();
-		Node var = NodeFactory.createVariable( ARQConstants.allocVarAnonMarker + randomVarID + anonVarCounter++ ); 
-		final Triple t = new Triple(s,p,o);
-
-		if(doneNested.get(t) == null)
+		if ( o instanceof Node_Triple )
 		{
-			epb.addTriple(t);
+			final Triple oTP = ( (Node_Triple) o ).get();
+			o = unNestTriplePattern(oTP, epb, true);
+		}
+
+		final Triple nonnestedTP = new Triple(s, p, o);
+		final boolean seenBefore = doneNested.containsKey(nonnestedTP);
+
+		final Node var;
+		if ( seenBefore ) {
+			var = doneNested.get(nonnestedTP);
 		}
 		else
-			var = doneNested.get(t);
-		
-		if(hasParent)
-		{	
-			if(doneNested.get(t) == null)
-			{
-				Node type = RDF.Nodes.type;
-				final Node statement = RDF.Nodes.Statement;
-			
-				Triple t1 = new Triple(var,type, statement);
-				epb.addTriple(t1);
-			
-				type = RDF.Nodes.subject;
-				t1 = new Triple(var,type,s);
-				epb.addTriple(t1);
-				
-				type = RDF.Nodes.predicate;
-				t1 = new Triple(var,type,p);
-				epb.addTriple(t1);
-				
-				type = RDF.Nodes.object;
-				t1 = new Triple(var,type,o);
-				epb.addTriple(t1);
-				doneNested.put(t, var);
+		{
+			var = createFreshAnonVarForReifiedTriple();
+			epb.addTriple(nonnestedTP);
+
+			if ( hasParent ) {
+				epb.addTriple( new Triple(var, RDF.Nodes.type,      RDF.Nodes.Statement) );
+				epb.addTriple( new Triple(var, RDF.Nodes.subject,   s) );
+				epb.addTriple( new Triple(var, RDF.Nodes.predicate, p) );
+				epb.addTriple( new Triple(var, RDF.Nodes.object,    o) );
+				doneNested.put(nonnestedTP, var);
 			}
 		}
 
 		return var;
 	}
 
-	public Node unNestBindClause(TriplePath triple, ElementPathBlock epb, boolean hasParent, Var v)
+	protected void unNestBindClause( Triple tp, ElementPathBlock epb, Var var )
 	{
-		Node s = triple.getSubject();
-		Node p = triple.getPredicate();
-		Node o = triple.getObject();
-	
-		if( s instanceof Node_Triple)
+		Node s = tp.getSubject();
+		Node p = tp.getPredicate();
+		Node o = tp.getObject();
+
+		if ( s instanceof Node_Triple )
 		{
-			final Triple tTemp = ((Node_Triple)s).get();
-			final TriplePath subTriple = new TriplePath(tTemp);
-			s = unNestTriplePattern(subTriple,epb,true);
+			final Triple sTP = ( (Node_Triple) s ).get();
+			s = unNestTriplePattern(sTP, epb, true);
 		}
-		
-		if( o instanceof Node_Triple)
+
+		if ( o instanceof Node_Triple )
 		{
-			final Triple tTemp = ((Node_Triple)o).get();
-			final TriplePath objTriple = new TriplePath(tTemp);
-			o = unNestTriplePattern(objTriple, epb,true);
+			final Triple oTP = ( (Node_Triple) o ).get();
+			o = unNestTriplePattern(oTP, epb, true);
 		}
-		
-		Node var = null;
-		if(!hasParent)
+
+		final Triple nonnestedTP = new Triple(s, p, o);
+
+		if ( ! doneNested.containsKey(nonnestedTP) )
 		{
-			var = v; 
+			epb.addTriple(nonnestedTP);
+			epb.addTriple( new Triple(var, RDF.Nodes.type,      RDF.Nodes.Statement) );
+			epb.addTriple( new Triple(var, RDF.Nodes.subject,   s) );
+			epb.addTriple( new Triple(var, RDF.Nodes.predicate, p) );
+			epb.addTriple( new Triple(var, RDF.Nodes.object,    o) );
+			doneNested.put(nonnestedTP, var);
 		}
-		else
-		{
-			var = NodeFactory.createBlankNode();
-		}
-		
-		final Triple t = new Triple(s,p,o);
-		if(doneNested.get(t) == null)
-		{
-			epb.addTriple(t);
-		}
-		else
-			var = doneNested.get(t);
-		
-		if(doneNested.get(t) == null)
-		{
-			Node type = RDF.Nodes.type;
-			final Node statement = RDF.Nodes.Statement;
-				
-			Triple t1 = new Triple(var,type, statement);
-			epb.addTriple(t1);
-				
-			type = RDF.Nodes.subject;
-			t1 = new Triple(var,type,s);
-			epb.addTriple(t1);
-					
-			type = RDF.Nodes.predicate;
-			t1 = new Triple(var,type,p);
-			epb.addTriple(t1);
-					
-			type = RDF.Nodes.object;
-			t1 = new Triple(var,type,o);
-			epb.addTriple(t1);
-			doneNested.put(t, var);
-		}
-		return var;
+	}
+
+	protected Node createFreshAnonVarForReifiedTriple()
+	{
+		final String varName = ARQConstants.allocVarAnonMarker + randomVarID + anonVarCounter++;
+		return NodeFactory.createVariable( varName );
 	}
 
 }
