@@ -93,7 +93,17 @@ public class ConverterRDF2RDFStar extends CmdGeneral
         final String outFileName = getValue(argOutputFile);
         if ( outFileName == null )
         {
-        	outStream = System.out; // no output file specified, write to stdout instead
+            // no output file specified, write to stdout instead
+            outStream = new OutputStream() {
+                @Override
+                public void write(int b) { System.out.write(b); }
+
+                @Override
+                public void flush() { System.out.flush(); }
+
+                @Override
+                public void close() {}
+            };
         }
         else
         {
