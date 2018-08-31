@@ -21,7 +21,7 @@ import se.liu.ida.rdfstar.tools.conversion.RDFStar2RDF;
 
 /**
  * 
- * @author Ebba Lindström
+ * @author Ebba Lindstrï¿½m
  * @author Olaf Hartig
  */
 
@@ -30,24 +30,24 @@ public class ConverterRDFStar2RDF extends CmdGeneral {
 	protected ModTime modTime                   = new ModTime();
     protected ModLangParse modLangParse         = new ModLangParse();
 
-    protected ArgDecl argOutputFile    = new ArgDecl(ArgDecl.HasValue, "out", "output", "outfile", "outputfile");
+    protected ArgDecl argOutputFile    = new ArgDecl(ArgDecl.HasValue, "out");
 
     protected String inputFilename;
     protected OutputStream outStream;
     protected boolean outStreamOpened = false;
-
 	
-	public static void main(String... argv) {
-	        new ConverterRDFStar2RDF(argv).mainRun();
-	    }
+    public static void main(String... argv) {
+        new ConverterRDFStar2RDF(argv).mainRun();
+    }
 	
 	protected ConverterRDFStar2RDF(String[] argv) {
 		super(argv);
 		
         super.addModule(modTime);
         super.addModule(modLangParse);
-        
 
+        super.getUsage().startCategory("Output options");
+        super.add( argOutputFile, "--out", "Output file (optional, printing to stdout if omitted)" );
 	}
 	
 	static String usage = ConverterRDFStar2RDF.class.getName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=file] infile" ;

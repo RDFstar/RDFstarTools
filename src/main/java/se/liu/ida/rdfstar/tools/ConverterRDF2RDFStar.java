@@ -29,7 +29,7 @@ public class ConverterRDF2RDFStar extends CmdGeneral
 {
     protected ModTime modTime                   = new ModTime();
     protected ModLangParse modLangParse         = new ModLangParse();
-    protected ArgDecl argOutputFile    = new ArgDecl(ArgDecl.HasValue, "out", "output", "outfile", "outputfile");
+    protected ArgDecl argOutputFile    = new ArgDecl(ArgDecl.HasValue, "out");
 
     protected String inputFilename;
     protected OutputStream outStream;
