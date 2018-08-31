@@ -119,11 +119,16 @@ public class ConverterRDFStar2RDF extends CmdGeneral {
             catch ( FileNotFoundException e ) {
             	cmdError("The created output file does not exists");
             }
-        }        
+        }
     }
 	
 	@Override
-	protected void exec() {
+	protected void exec()
+    {
+	    if(modTime.timingEnabled()){
+	        modTime.startTimer();
+        }
+
     	try {
     		final RDFStar2RDF converter = new RDFStar2RDF();
     		converter.convert(inputFilename, outStream);
@@ -160,7 +165,11 @@ public class ConverterRDFStar2RDF extends CmdGeneral {
     			}
     		}
     	}
-		
+
+        if(modTime.timingEnabled()){
+	        modTime.endTimer();
+            System.out.printf("Processed in %s sec\n", modTime.getTimeInterval()/1000f);
+        }
 	}
 
 	@Override

@@ -134,6 +134,10 @@ public class ConverterRDF2RDFStar extends CmdGeneral
     @Override
     protected void exec()
     {
+        if(modTime.timingEnabled()){
+            modTime.startTimer();
+        }
+
     	try {
     		final RDF2RDFStar converter = new RDF2RDFStar();
     		converter.convert(inputFilename, outStream);
@@ -170,6 +174,11 @@ public class ConverterRDF2RDFStar extends CmdGeneral
     			}
     		}
     	}
+
+        if(modTime.timingEnabled()){
+            modTime.endTimer();
+            System.out.printf("Processed in %s sec\n", modTime.getTimeInterval()/1000f);
+        }
     }
 
 }
