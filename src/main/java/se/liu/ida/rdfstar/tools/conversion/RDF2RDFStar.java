@@ -31,6 +31,7 @@ import se.liu.ida.rdfstar.tools.serializer.NodeFormatterTurtleStarExtImpl;
  * @author Amir Hakim
  * @author Ebba Lindström
  * @author Olaf Hartig
+ * @author Robin Keskisärkkä
  */
 public class RDF2RDFStar
 {
@@ -54,13 +55,16 @@ public class RDF2RDFStar
 
 		// second pass over the file to perform the conversion in a streaming manner
 		final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
+		final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-		RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
+		// PipedRDFStream and PipedRDFIterator need to be on different threads
+		new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 			              .source(inputFilename)
+				          .checking(false)
 			              .lang(RDFLanguages.TURTLE)
 			              .base(fp.baseIRI)
 				          .build()
-			              .parse( new PipedTriplesStream(it) );
+			              .parse(triplesStream)).start();
 
 		final NodeFormatter nFmt = new NodeFormatterTurtleStarExtImpl(fp.getBaseIRI(), fp.getPrefixMap());
 		printTriples(writer, nFmt, it, fp.getReifiedTriples());
@@ -235,19 +239,22 @@ public class RDF2RDFStar
 
 		public void execute()
 		{
-			final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>(BUFFER_SIZE);
+			final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
+			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-			RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
+			// PipedRDFStream and PipedRDFIterator need to be on different threads
+			new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 			                  .source(inputFilename)
 			                  .lang(RDFLanguages.TURTLE)
+					          .checking(false)
 			                  .base(baseIRI)
 					          .build()
-			                  .parse( new PipedTriplesStream(it) );
+			                  .parse(triplesStream)).start();
 
 			// Record all reification statements in the hashmap
-			while ( it.hasNext() ) {
-	        	recordIfReificationStmt( it.next() );
-	        }
+			while (it.hasNext()) {
+	        	recordIfReificationStmt(it.next());
+			}
 
 			pmap = it.getPrefixes();
 			if(baseIRI == null) {

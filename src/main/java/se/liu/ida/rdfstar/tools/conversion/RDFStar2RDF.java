@@ -29,7 +29,8 @@ import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
  * @author Jesper Eriksson
  * @author Amir Hakim
  * @author Ebba Lindström
- * @author Olaf Hartigs
+ * @author Olaf Hartig
+ * @author Robin Keskisärkkä
  */
 public class RDFStar2RDF
 {
@@ -84,23 +85,24 @@ public class RDFStar2RDF
 
 			// second pass over the file to perform the conversion in a streaming manner
 			final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
+			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-			RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )				  
+			// PipedRDFStream and PipedRDFIterator need to be on different threads
+			new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 			                  .source(inputFilename)
 			                  .checking(false)
 			                  .lang(LangTurtleStar.TURTLESTAR)
 					          .base(baseIRI)
 			                  .build()
-			                  .parse( new PipedTriplesStream(it) );
+			                  .parse(triplesStream)).start();
 
 			final NodeFormatter nFmt = new NodeFormatterTTL(baseIRI, pmap);
 
 			while ( it.hasNext() ) {
-				printTriples(it.next(), writer, nFmt, false);	
+				printTriples(it.next(), writer, nFmt, false);
 			}
 
 			it.close();
-
 			writer.write(" .");
 			writer.flush();
 			writer.close();
@@ -240,15 +242,17 @@ public class RDFStar2RDF
 
 		public void execute()
 		{
-			final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>(BUFFER_SIZE);
+			final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
+			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-			RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
-			                  .source(inputFilename)
-						      .checking(false)
-						      .lang(LangTurtleStar.TURTLESTAR)
-					          .base(baseIRI)
-			                  .build()
-			                  .parse( new PipedTriplesStream(it) );
+			// PipedRDFStream and PipedRDFIterator need to be on different threads
+			new Thread(() -> RDFParser.create().labelToNode(LabelToNode.createUseLabelEncoded())
+                    .source(inputFilename)
+                    .checking(false)
+                    .lang(LangTurtleStar.TURTLESTAR)
+                    .base(baseIRI)
+                    .build()
+                    .parse(triplesStream)).start();
 
 			// consume the iterator
 			while ( it.hasNext() ) {
