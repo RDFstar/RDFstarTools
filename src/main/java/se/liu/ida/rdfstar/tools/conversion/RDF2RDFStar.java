@@ -10,6 +10,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.lang.PipedRDFIterator;
@@ -35,9 +36,15 @@ public class RDF2RDFStar
 {
 	protected final static int BUFFER_SIZE = 16000;
 
-	public void convert( String inputFilename, OutputStream outStream )
+	public void convert( String inputFilename, OutputStream outStream)
+	{
+		convert(inputFilename, outStream, null);
+	}
+
+	public void convert( String inputFilename, OutputStream outStream, String baseIRI )
 	{
 		final FirstPass fp = new FirstPass(inputFilename, outStream);
+		fp.setBaseIRI(baseIRI);
 		fp.execute();
 
 		// print all prefixes and the base IRI to the output file
@@ -50,8 +57,9 @@ public class RDF2RDFStar
 
 		RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 			              .source(inputFilename)
-			              //.lang(RDFLanguages.TURTLE)
-			              .build()
+			              .lang(RDFLanguages.TURTLE)
+			              .base(fp.baseIRI)
+				          .build()
 			              .parse( new PipedTriplesStream(it) );
 
 		final NodeFormatter nFmt = new NodeFormatterTurtleStarExtImpl(fp.getBaseIRI(), fp.getPrefixMap());
@@ -212,6 +220,7 @@ public class RDF2RDFStar
 
 		public PrefixMap getPrefixMap() { return pmap; }
 		public String getBaseIRI() { return baseIRI; }
+		public void setBaseIRI(String baseIRI) { this.baseIRI = baseIRI; }
 
 		public ReifiedTriples getReifiedTriples() {
 			if ( rt == null ) {
@@ -230,8 +239,9 @@ public class RDF2RDFStar
 
 			RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 			                  .source(inputFilename)
-			                  //.lang(RDFLanguages.TURTLE)
-			                  .build()
+			                  .lang(RDFLanguages.TURTLE)
+			                  .base(baseIRI)
+					          .build()
 			                  .parse( new PipedTriplesStream(it) );
 
 			// Record all reification statements in the hashmap
@@ -240,7 +250,9 @@ public class RDF2RDFStar
 	        }
 
 			pmap = it.getPrefixes();
-			baseIRI = it.getBaseIri();
+			if(baseIRI == null) {
+				baseIRI = it.getBaseIri();
+			}
 
 			it.close();
 		}

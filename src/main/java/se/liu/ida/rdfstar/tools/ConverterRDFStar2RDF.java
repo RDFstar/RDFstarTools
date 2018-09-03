@@ -131,7 +131,7 @@ public class ConverterRDFStar2RDF extends CmdGeneral {
 
     	try {
     		final RDFStar2RDF converter = new RDFStar2RDF();
-    		converter.convert(inputFilename, outStream);
+    		converter.convert(inputFilename, outStream, modLangParse.getBaseIRI());
     	}
         catch (ARQInternalErrorException intEx)
         {

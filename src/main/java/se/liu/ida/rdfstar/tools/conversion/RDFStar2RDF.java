@@ -37,7 +37,13 @@ public class RDFStar2RDF
 
 	public void convert( String inputFilename, OutputStream outStream )
 	{
+		convert(inputFilename, outStream, null);
+	}
+
+	public void convert( String inputFilename, OutputStream outStream, String baseIRI )
+	{
 		final FirstPass fp = new FirstPass(inputFilename, outStream);
+		fp.setBaseIRI(baseIRI);
 		fp.execute();
 
 		final FileConverter fc = new FileConverter(inputFilename,
@@ -56,7 +62,7 @@ public class RDFStar2RDF
 
 		// populated during the conversion to record for every reified
 		// triple, the blank node that has been created as statement ID
-		protected final Map<Triple,Node> bNodes = new HashMap<Triple,Node>();
+		protected final Map<Triple,Node> bNodes = new HashMap<>();
 
 		protected boolean first_lap = true;
 		protected Node lastSubject = NodeFactory.createBlankNode(); //used to create turtle blocks
@@ -83,6 +89,7 @@ public class RDFStar2RDF
 			                  .source(inputFilename)
 			                  .checking(false)
 			                  .lang(LangTurtleStar.TURTLESTAR)
+					          .base(baseIRI)
 			                  .build()
 			                  .parse( new PipedTriplesStream(it) );
 
@@ -229,6 +236,7 @@ public class RDFStar2RDF
 
 		public PrefixMap getPrefixMap() { return pmap; }
 		public String getBaseIRI() { return baseIRI; }
+		public void setBaseIRI(String baseIRI) { this.baseIRI = baseIRI; }
 
 		public void execute()
 		{
@@ -238,6 +246,7 @@ public class RDFStar2RDF
 			                  .source(inputFilename)
 						      .checking(false)
 						      .lang(LangTurtleStar.TURTLESTAR)
+					          .base(baseIRI)
 			                  .build()
 			                  .parse( new PipedTriplesStream(it) );
 
@@ -247,7 +256,9 @@ public class RDFStar2RDF
 	        }
 
 			pmap = it.getPrefixes();
-			baseIRI = it.getBaseIri();
+			if(baseIRI == null) {
+				baseIRI = it.getBaseIri();
+			}
 
 			it.close();
 		}
