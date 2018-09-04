@@ -61,7 +61,7 @@ public class RDF2RDFStar
 		new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 			              .source(inputFilename)
 				          .checking(false)
-			              .lang(RDFLanguages.TURTLE)
+			              //.lang(RDFLanguages.TURTLE)
 			              .base(fp.baseIRI)
 				          .build()
 			              .parse(triplesStream)).start();
@@ -245,7 +245,7 @@ public class RDF2RDFStar
 			// PipedRDFStream and PipedRDFIterator need to be on different threads
 			new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 			                  .source(inputFilename)
-			                  .lang(RDFLanguages.TURTLE)
+			                  //.lang(RDFLanguages.TURTLE)
 					          .checking(false)
 			                  .base(baseIRI)
 					          .build()
