@@ -35,13 +35,6 @@ public class ConverterRDFStar2RDFSplit extends CmdGeneral {
     protected OutputStream reifStream;
 
     public static void main(String... argv) {
-        argv = new String[]{
-                "--time",
-                "--prefix", "prefix.txt",
-                "--meta", "meta.txt",
-                "--reif", "reif.txt",
-                "test.ttls"
-        };
         new ConverterRDFStar2RDFSplit(argv).mainRun();
     }
 
@@ -54,7 +47,8 @@ public class ConverterRDFStar2RDFSplit extends CmdGeneral {
         super.add(argReifFile, "--reif", "Reification data output file");
     }
 
-    static String usage = ConverterRDFStar2RDF.class.getName() + " [--time] [--check|--noCheck] [--sink] [--split] [--base=IRI] [--out=file] infile";
+    static String usage = ConverterRDFStar2RDF.class.getName() +
+            " [--time] [--base=IRI] [--prefixes=file1] [--meta=file2] [--reif=file3] infile";
 
     @Override
     protected String getSummary() {
