@@ -52,7 +52,7 @@ public class ConverterRDF2RDFStar extends CmdGeneral
         super.addModule(modLangParse);
 
         super.getUsage().startCategory("Output options");
-        super.add( argOutputFile, "--out", "Output file (optional, printing to stdout if omitted)" );
+        super.add( argOutputFile, "--out   --outfile", "Output file (optional, printing to stdout if omitted)" );
     }
 
     static String usage = ConverterRDF2RDFStar.class.getName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=file] infile" ;
@@ -140,7 +140,7 @@ public class ConverterRDF2RDFStar extends CmdGeneral
 
     	try {
     		final RDF2RDFStar converter = new RDF2RDFStar();
-    		converter.convert(inputFilename, outStream, modLangParse.getBaseIRI());
+    		converter.convert(inputFilename, outStream, modLangParse.getLang(), modLangParse.getBaseIRI());
     	}
         catch (ARQInternalErrorException intEx)
         {

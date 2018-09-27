@@ -12,7 +12,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.lang.PipedRDFIterator;
 import org.apache.jena.riot.lang.PipedTriplesStream;
@@ -40,13 +42,22 @@ public class RDF2RDFStar
 
 	public void convert( String inputFilename, OutputStream outStream)
 	{
-		convert(inputFilename, outStream, null);
+		convert(inputFilename, outStream, null, null);
 	}
 
-	public void convert( final String inputFilename, OutputStream outStream, String baseIRI )
+	public void convert( String inputFilename, OutputStream outStream, Lang inputLang )
 	{
-		final FirstPass fp = new FirstPass(inputFilename, outStream);
-		fp.setBaseIRI(baseIRI);
+		convert( inputFilename, outStream, inputLang, null );
+	}
+
+	public void convert( String inputFilename, OutputStream outStream, String baseIRI )
+	{
+		convert( inputFilename, outStream, null, baseIRI );
+	}
+
+	public void convert( String inputFilename, OutputStream outStream, Lang inputLang, String baseIRI )
+	{
+		final FirstPass fp = new FirstPass(inputFilename, inputLang, baseIRI);
 		fp.execute();
 
 		// print all prefixes and the base IRI to the output file
@@ -55,24 +66,20 @@ public class RDF2RDFStar
 		RiotLib.writeBase(writer, fp.getBaseIRI());
 
 		// second pass over the file to perform the conversion in a streaming manner
+		// (PipedTriplesStream and PipedRDFIterator need to be on different threads!!)
 		final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
 		final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-		// PipedRDFStream and PipedRDFIterator need to be on different threads
-		final Runnable r = new Runnable() {
-			@Override
-			public void run() {
-				RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
-	              .source(inputFilename)
-		          .checking(false)
-	              //.lang(RDFLanguages.TURTLE)
-	              .base(fp.baseIRI)
-		          .build()
-	              .parse(triplesStream);				
-			}
-		};
+		final Parser p = new Parser(inputFilename, triplesStream);
+
+		if ( baseIRI != null )
+			p.setBaseIRI(baseIRI);
+
+		if ( inputLang != null )
+			p.setLang(inputLang);
+
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.submit(r);
+		executor.submit(p);
 
 		final NodeFormatter nFmt = new NodeFormatterTurtleStarExtImpl(fp.getBaseIRI(), fp.getPrefixMap());
 		printTriples(writer, nFmt, it, fp.getReifiedTriples());
@@ -216,8 +223,8 @@ public class RDF2RDFStar
 	 */
 	protected class FirstPass
 	{
-		final protected String inputFilename;
-		final protected OutputStream outStream;
+		final protected PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
+		final protected Parser parser;
 
 		// using 3-element arrays to avoid having to create multiple Java objects for each reification statement found 
 		final protected HashMap<Node,Node[]> reificationStmts = new HashMap<Node,Node[]>();
@@ -226,16 +233,26 @@ public class RDF2RDFStar
 
 		protected ReifiedTriples rt;
 
-		public FirstPass( String inputFilename, OutputStream outStream ) {
-			this.inputFilename = inputFilename;
-			this.outStream = outStream;
+		public FirstPass( String inputFilename ) { this(inputFilename, null, null); }
+
+		public FirstPass( String inputFilename, Lang inputLang, String baseIRI )
+		{
+			parser = new Parser( inputFilename, new PipedTriplesStream(it) );
+
+			if ( inputLang != null )
+				parser.setLang(inputLang);
+
+			if ( baseIRI != null ) {
+				this.baseIRI = baseIRI;
+				parser.setBaseIRI(baseIRI);
+			}
 		}
 
 		public PrefixMap getPrefixMap() { return pmap; }
 		public String getBaseIRI() { return baseIRI; }
-		public void setBaseIRI(String baseIRI) { this.baseIRI = baseIRI; }
 
-		public ReifiedTriples getReifiedTriples() {
+		public ReifiedTriples getReifiedTriples()
+		{
 			if ( rt == null ) {
 				rt = new ReifiedTriples() {
 					public boolean contains(Node id) { return reificationStmts.containsKey(id); }
@@ -248,24 +265,9 @@ public class RDF2RDFStar
 
 		public void execute()
 		{
-			final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
-			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
-
-			// PipedRDFStream and PipedRDFIterator need to be on different threads
-			final Runnable r = new Runnable() {				
-				@Override
-				public void run() {
-					RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
-	                  .source(inputFilename)
-	                  //.lang(RDFLanguages.TURTLE)
-			          .checking(false)
-	                  .base(baseIRI)
-			          .build()
-	                  .parse(triplesStream);
-				}
-			};
+			// PipedTriplesStream and PipedRDFIterator need to be on different threads
 			final ExecutorService executor = Executors.newSingleThreadExecutor();
-			executor.submit(r);
+			executor.submit(parser);
 
 			// Record all reification statements in the hashmap
 			while (it.hasNext()) {
@@ -331,4 +333,35 @@ public class RDF2RDFStar
 		}
 
 	} // end of class FirstPass
+
+
+	/**
+	 * Performs a first pass over the input file to collect all reification
+	 * statements and all prefixes
+	 */
+	protected class Parser implements Runnable
+	{
+		final String inputFilename;
+		final PipedTriplesStream triplesStream;
+		final RDFParserBuilder builder;
+
+		public Parser( String inputFilename, PipedTriplesStream triplesStream ) {
+			this.inputFilename = inputFilename;
+			this.triplesStream = triplesStream;
+
+			builder = RDFParser.create();
+			builder.labelToNode( LabelToNode.createUseLabelEncoded() );
+			builder.source(inputFilename);
+			builder.checking(false);
+		}
+
+		public void setLang( Lang lang ) { builder.lang(lang); }
+
+		public void setBaseIRI( String baseIRI ) { builder.base(baseIRI); }
+
+		@Override
+		public void run() { builder.build().parse(triplesStream); }
+
+	} // end of class Parser
+
 }
