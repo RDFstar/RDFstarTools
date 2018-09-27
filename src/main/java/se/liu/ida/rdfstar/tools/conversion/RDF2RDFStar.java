@@ -3,6 +3,8 @@ package se.liu.ida.rdfstar.tools.conversion;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -69,12 +71,14 @@ public class RDF2RDFStar
 	              .parse(triplesStream);				
 			}
 		};
-		new Thread(r).start();
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		executor.submit(r);
 
 		final NodeFormatter nFmt = new NodeFormatterTurtleStarExtImpl(fp.getBaseIRI(), fp.getPrefixMap());
 		printTriples(writer, nFmt, it, fp.getReifiedTriples());
 
 		it.close();
+		executor.shutdown();
 
 		writer.write(" .");
 		writer.flush();
@@ -260,7 +264,8 @@ public class RDF2RDFStar
 	                  .parse(triplesStream);
 				}
 			};
-			new Thread(r).start();
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.submit(r);
 
 			// Record all reification statements in the hashmap
 			while (it.hasNext()) {
@@ -273,6 +278,7 @@ public class RDF2RDFStar
 			}
 
 			it.close();
+			executor.shutdown();
 		}
 
 		/**

@@ -3,6 +3,8 @@ package se.liu.ida.rdfstar.tools.conversion;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -100,7 +102,8 @@ public class RDFStar2RDF
 	                  .parse(triplesStream);
 				}
 			};
-			new Thread(r).start();
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.submit(r);
 
 			final NodeFormatter nFmt = new NodeFormatterTTL(baseIRI, pmap);
 
@@ -109,6 +112,8 @@ public class RDFStar2RDF
 			}
 
 			it.close();
+			executor.shutdown();
+
 			writer.write(" .");
 			writer.flush();
 			writer.close();
@@ -264,7 +269,8 @@ public class RDFStar2RDF
                     .parse(triplesStream);
 				}
 			};
-			new Thread(r).start();
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.submit(r);
 
 			// consume the iterator
 			while ( it.hasNext() ) {
@@ -277,6 +283,7 @@ public class RDFStar2RDF
 			}
 
 			it.close();
+			executor.shutdown();
 		}
 
 	} // end of class FirstPass
