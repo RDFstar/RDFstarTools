@@ -88,13 +88,19 @@ public class RDFStar2RDF
 			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
 			// PipedRDFStream and PipedRDFIterator need to be on different threads
-			new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
-			                  .source(inputFilename)
-			                  .checking(false)
-			                  .lang(LangTurtleStar.TURTLESTAR)
-					          .base(baseIRI)
-			                  .build()
-			                  .parse(triplesStream)).start();
+			final Runnable r = new Runnable() {
+				@Override
+				public void run() {
+					RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
+	                  .source(inputFilename)
+	                  .checking(false)
+	                  .lang(LangTurtleStar.TURTLESTAR)
+			          .base(baseIRI)
+	                  .build()
+	                  .parse(triplesStream);
+				}
+			};
+			new Thread(r).start();
 
 			final NodeFormatter nFmt = new NodeFormatterTTL(baseIRI, pmap);
 
@@ -246,13 +252,19 @@ public class RDFStar2RDF
 			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
 			// PipedRDFStream and PipedRDFIterator need to be on different threads
-			new Thread(() -> RDFParser.create().labelToNode(LabelToNode.createUseLabelEncoded())
+			final Runnable r = new Runnable() {
+				@Override
+				public void run() {
+					RDFParser.create().labelToNode(LabelToNode.createUseLabelEncoded())
                     .source(inputFilename)
                     .checking(false)
                     .lang(LangTurtleStar.TURTLESTAR)
                     .base(baseIRI)
                     .build()
-                    .parse(triplesStream)).start();
+                    .parse(triplesStream);
+				}
+			};
+			new Thread(r).start();
 
 			// consume the iterator
 			while ( it.hasNext() ) {

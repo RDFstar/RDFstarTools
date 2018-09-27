@@ -10,7 +10,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.lang.PipedRDFIterator;
@@ -42,7 +41,7 @@ public class RDF2RDFStar
 		convert(inputFilename, outStream, null);
 	}
 
-	public void convert( String inputFilename, OutputStream outStream, String baseIRI )
+	public void convert( final String inputFilename, OutputStream outStream, String baseIRI )
 	{
 		final FirstPass fp = new FirstPass(inputFilename, outStream);
 		fp.setBaseIRI(baseIRI);
@@ -58,13 +57,19 @@ public class RDF2RDFStar
 		final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
 		// PipedRDFStream and PipedRDFIterator need to be on different threads
-		new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
-			              .source(inputFilename)
-				          .checking(false)
-			              //.lang(RDFLanguages.TURTLE)
-			              .base(fp.baseIRI)
-				          .build()
-			              .parse(triplesStream)).start();
+		final Runnable r = new Runnable() {
+			@Override
+			public void run() {
+				RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
+	              .source(inputFilename)
+		          .checking(false)
+	              //.lang(RDFLanguages.TURTLE)
+	              .base(fp.baseIRI)
+		          .build()
+	              .parse(triplesStream);				
+			}
+		};
+		new Thread(r).start();
 
 		final NodeFormatter nFmt = new NodeFormatterTurtleStarExtImpl(fp.getBaseIRI(), fp.getPrefixMap());
 		printTriples(writer, nFmt, it, fp.getReifiedTriples());
@@ -243,13 +248,19 @@ public class RDF2RDFStar
 			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
 			// PipedRDFStream and PipedRDFIterator need to be on different threads
-			new Thread(() -> RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
-			                  .source(inputFilename)
-			                  //.lang(RDFLanguages.TURTLE)
-					          .checking(false)
-			                  .base(baseIRI)
-					          .build()
-			                  .parse(triplesStream)).start();
+			final Runnable r = new Runnable() {				
+				@Override
+				public void run() {
+					RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
+	                  .source(inputFilename)
+	                  //.lang(RDFLanguages.TURTLE)
+			          .checking(false)
+	                  .base(baseIRI)
+			          .build()
+	                  .parse(triplesStream);
+				}
+			};
+			new Thread(r).start();
 
 			// Record all reification statements in the hashmap
 			while (it.hasNext()) {
