@@ -69,7 +69,7 @@ public class ConverterRDF2RDFStar extends ExtendedCmdGeneral
         super.add( argOutputFile, "--out   --outfile", "Output file (optional, printing to stdout if omitted)" );
     }
 
-    static String usage = ConverterRDF2RDFStar.class.getName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=file] infile" ;
+    static String usage = ConverterRDF2RDFStar.class.getName()+" [--syntax=NAME] [--base=IRI] [--out=file] infile" ;
 
     @Override
     protected String getSummary()
