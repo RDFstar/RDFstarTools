@@ -196,7 +196,6 @@ public class LangTurtleStarTest {
         RDFParser.create()
                  .source(reader)
                  .lang(LangTurtleStar.TURTLESTAR)
-                 .checking(false)  // !!!!
                  .parse(dest);
 
 		return g;
@@ -213,7 +212,6 @@ public class LangTurtleStarTest {
 
         RDFParser.create()
                  .source( "file://" + fullFilename )
-                 .checking(false)  // !!!!
                  .parse(dest);
 
 		return g;

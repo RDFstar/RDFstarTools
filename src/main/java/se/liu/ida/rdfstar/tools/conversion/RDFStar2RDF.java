@@ -95,7 +95,6 @@ public class RDFStar2RDF
 				public void run() {
 					RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
 	                  .source(inputFilename)
-	                  .checking(false)
 	                  .lang(LangTurtleStar.TURTLESTAR)
 			          .base(baseIRI)
 	                  .build()
@@ -262,7 +261,6 @@ public class RDFStar2RDF
 				public void run() {
 					RDFParser.create().labelToNode(LabelToNode.createUseLabelEncoded())
                     .source(inputFilename)
-                    .checking(false)
                     .lang(LangTurtleStar.TURTLESTAR)
                     .base(baseIRI)
                     .build()

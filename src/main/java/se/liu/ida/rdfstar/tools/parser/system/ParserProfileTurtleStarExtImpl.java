@@ -1,6 +1,8 @@
 package se.liu.ida.rdfstar.tools.parser.system;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.FactoryRDF;
 import org.apache.jena.riot.system.IRIResolver;
@@ -31,6 +33,29 @@ public class ParserProfileTurtleStarExtImpl extends ParserProfileStd implements 
     		return ParserProfileTurtleStar.Helper.createTripleNodeFromEmbeddedTripleToken(this, scope, token, line, col);
     	else
     		return super.createNodeFromToken(scope, token, line, col);
+    }
+
+    @Override
+    protected void checkTriple(Node subject, Node predicate, Node object, long line, long col) {
+    	if ( subject == null
+    	     || (!subject.isURI() && 
+    	         !subject.isBlank() &&
+    	         !(subject instanceof Node_Triple)) ) {
+        	getErrorHandler().error("Subject is not a URI, blank node, or triple", line, col);
+            throw new RiotException("Bad subject: " + subject);
+        }
+        if ( predicate == null || (!predicate.isURI()) ) {
+        	getErrorHandler().error("Predicate not a URI", line, col);
+            throw new RiotException("Bad predicate: " + predicate);
+        }
+        if ( object == null
+             || (!object.isURI() &&
+                 !object.isBlank() &&
+                 !object.isLiteral() &&
+                 !(object instanceof Node_Triple)) ) {
+        	getErrorHandler().error("Object is not a URI, blank node, literal, or triple", line, col);
+            throw new RiotException("Bad object: " + object);
+        }
     }
 
 }

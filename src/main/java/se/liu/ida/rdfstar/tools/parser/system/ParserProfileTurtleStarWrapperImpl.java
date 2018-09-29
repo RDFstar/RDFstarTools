@@ -2,9 +2,11 @@ package se.liu.ida.rdfstar.tools.parser.system;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.FactoryRDF;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.PrefixMap;
@@ -54,12 +56,24 @@ public class ParserProfileTurtleStarWrapperImpl implements ParserProfileTurtleSt
 
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) {
-        return profile.createTriple(subject, predicate, object, line, col);
+    	final boolean sIsTriple = ( subject != null && subject instanceof Node_Triple );
+    	final boolean oIsTriple = ( object  != null && object  instanceof Node_Triple );
+
+    	if ( ! sIsTriple && ! oIsTriple )
+    		return profile.createTriple(subject, predicate, object, line, col);
+    	else
+    		return getFactorRDF().createTriple(subject, predicate, object);
     }
 
     @Override
     public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
-        return profile.createQuad(graph, subject, predicate, object, line, col);
+    	final boolean sIsTriple = ( subject != null && subject instanceof Node_Triple );
+    	final boolean oIsTriple = ( object  != null && object  instanceof Node_Triple );
+
+    	if ( ! sIsTriple && ! oIsTriple )
+    		return profile.createQuad(graph, subject, predicate, object, line, col);
+    	else
+    		return getFactorRDF().createQuad(graph, subject, predicate, object);
     }
 
     @Override
@@ -113,4 +127,10 @@ public class ParserProfileTurtleStarWrapperImpl implements ParserProfileTurtleSt
     public PrefixMap getPrefixMap() {
         return profile.getPrefixMap();
     }
+
+	@Override
+	public FactoryRDF getFactorRDF() {
+		return profile.getFactorRDF();
+	}
+
 }

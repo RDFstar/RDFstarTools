@@ -27,7 +27,7 @@ public class ParserProfileTurtleStarExtImplTest extends AbstractParserProfileTur
                  IRIResolver.create(),
                  getPrefixMap(),
                  RIOT.getContext().copy(),
-                 false, // checking
+                 true,
                  false) );
 	}
 
