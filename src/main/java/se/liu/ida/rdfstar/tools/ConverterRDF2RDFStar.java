@@ -10,6 +10,9 @@ import org.apache.jena.Jena;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RIOT;
+import org.apache.jena.riot.SysRIOT;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.ARQInternalErrorException;
 
@@ -51,12 +54,14 @@ public class ConverterRDF2RDFStar extends ExtendedCmdGeneral
         super.addModule(modTime);
 
         registerArgumentToBeIgnored("sink");
+        registerArgumentToBeIgnored("nocheck");
         registerArgumentToBeIgnored("validate");
         registerArgumentToBeIgnored("rdfs");
 
         super.addModule(modLangParse);
 
         unregisterArgumentToBeIgnored("sink");
+        registerArgumentToBeIgnored("nocheck");
         unregisterArgumentToBeIgnored("validate");
         unregisterArgumentToBeIgnored("rdfs");
 
@@ -148,8 +153,21 @@ public class ConverterRDF2RDFStar extends ExtendedCmdGeneral
         }
 
     	try {
+            if ( modLangParse.strictMode() || modLangParse.explicitChecking() )
+                SysRIOT.setStrictMode(true);
+
+            final ErrorHandler errHandler = 
+            		ErrorHandlerFactory.errorHandlerTracking( ErrorHandlerFactory.stdLogger, 
+                                                              modLangParse.stopOnBadTerm(),
+                                                              modLangParse.stopOnWarnings() );
+
     		final RDF2RDFStar converter = new RDF2RDFStar();
-    		converter.convert(inputFilename, outStream, modLangParse.getLang(), modLangParse.getBaseIRI());
+    		converter.convert( inputFilename,
+    				           outStream,
+    				           modLangParse.getLang(),
+    				           modLangParse.getBaseIRI(),
+    				           errHandler,
+    				           modLangParse.explicitChecking() );
     	}
         catch (ARQInternalErrorException intEx)
         {

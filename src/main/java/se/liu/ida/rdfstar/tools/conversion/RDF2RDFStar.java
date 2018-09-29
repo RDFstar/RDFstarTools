@@ -19,6 +19,7 @@ import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.lang.PipedRDFIterator;
 import org.apache.jena.riot.lang.PipedTriplesStream;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.vocabulary.RDF;
@@ -39,25 +40,31 @@ import se.liu.ida.rdfstar.tools.serializer.NodeFormatterTurtleStarExtImpl;
 public class RDF2RDFStar
 {
 	protected final static int BUFFER_SIZE = 16000;
+	protected final static boolean DEFAULT_VALUE_enableChecking = false;
 
 	public void convert( String inputFilename, OutputStream outStream)
 	{
-		convert(inputFilename, outStream, null, null);
+		convert( inputFilename, outStream, null, null, null, DEFAULT_VALUE_enableChecking );
 	}
 
 	public void convert( String inputFilename, OutputStream outStream, Lang inputLang )
 	{
-		convert( inputFilename, outStream, inputLang, null );
+		convert( inputFilename, outStream, inputLang, null, null, DEFAULT_VALUE_enableChecking );
 	}
 
 	public void convert( String inputFilename, OutputStream outStream, String baseIRI )
 	{
-		convert( inputFilename, outStream, null, baseIRI );
+		convert( inputFilename, outStream, null, baseIRI, null, DEFAULT_VALUE_enableChecking );
 	}
 
-	public void convert( String inputFilename, OutputStream outStream, Lang inputLang, String baseIRI )
+	public void convert( String inputFilename,
+			             OutputStream outStream,
+                         Lang inputLang,
+			             String baseIRI,
+			             ErrorHandler errHandler,
+			             boolean enableChecking )
 	{
-		final FirstPass fp = new FirstPass(inputFilename, inputLang, baseIRI);
+		final FirstPass fp = new FirstPass(inputFilename, inputLang, baseIRI, errHandler, enableChecking);
 		fp.execute();
 
 		// print all prefixes and the base IRI to the output file
@@ -70,13 +77,16 @@ public class RDF2RDFStar
 		final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
 		final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-		final Parser p = new Parser(inputFilename, triplesStream);
+		final Parser p = new Parser(inputFilename, triplesStream, enableChecking);
 
 		if ( baseIRI != null )
 			p.setBaseIRI(baseIRI);
 
 		if ( inputLang != null )
 			p.setLang(inputLang);
+
+		if ( errHandler != null )
+			p.setErrorHandler(errHandler);
 
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
 		executor.submit(p);
@@ -233,11 +243,11 @@ public class RDF2RDFStar
 
 		protected ReifiedTriples rt;
 
-		public FirstPass( String inputFilename ) { this(inputFilename, null, null); }
+		public FirstPass( String inputFilename ) { this(inputFilename, null, null, null, DEFAULT_VALUE_enableChecking); }
 
-		public FirstPass( String inputFilename, Lang inputLang, String baseIRI )
+		public FirstPass( String inputFilename, Lang inputLang, String baseIRI, ErrorHandler errHandler, boolean enableChecking )
 		{
-			parser = new Parser( inputFilename, new PipedTriplesStream(it) );
+			parser = new Parser( inputFilename, new PipedTriplesStream(it), enableChecking );
 
 			if ( inputLang != null )
 				parser.setLang(inputLang);
@@ -246,6 +256,9 @@ public class RDF2RDFStar
 				this.baseIRI = baseIRI;
 				parser.setBaseIRI(baseIRI);
 			}
+
+			if ( errHandler != null )
+				parser.setErrorHandler(errHandler);
 		}
 
 		public PrefixMap getPrefixMap() { return pmap; }
@@ -345,19 +358,22 @@ public class RDF2RDFStar
 		final PipedTriplesStream triplesStream;
 		final RDFParserBuilder builder;
 
-		public Parser( String inputFilename, PipedTriplesStream triplesStream ) {
+		public Parser( String inputFilename, PipedTriplesStream triplesStream, boolean enableChecking )
+		{
 			this.inputFilename = inputFilename;
 			this.triplesStream = triplesStream;
 
 			builder = RDFParser.create();
 			builder.labelToNode( LabelToNode.createUseLabelEncoded() );
 			builder.source(inputFilename);
-			builder.checking(false);
+			builder.checking(enableChecking);
 		}
 
 		public void setLang( Lang lang ) { builder.lang(lang); }
 
 		public void setBaseIRI( String baseIRI ) { builder.base(baseIRI); }
+
+		public void setErrorHandler( ErrorHandler handler ) { builder.errorHandler(handler); }
 
 		@Override
 		public void run() { builder.build().parse(triplesStream); }
