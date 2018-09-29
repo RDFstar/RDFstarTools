@@ -17,7 +17,7 @@ import arq.cmdline.ModLangParse;
 import arq.cmdline.ModTime;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
+import se.liu.ida.rdfstar.tools.cmdutils.ExtendedCmdGeneral;
 import se.liu.ida.rdfstar.tools.conversion.RDF2RDFStar;
 
 /**
@@ -25,7 +25,7 @@ import se.liu.ida.rdfstar.tools.conversion.RDF2RDFStar;
  * @author Ebba Lindström
  * @author Olaf Hartig
  */
-public class ConverterRDF2RDFStar extends CmdGeneral
+public class ConverterRDF2RDFStar extends ExtendedCmdGeneral
 {
     protected ModTime modTime                   = new ModTime();
     protected ModLangParse modLangParse         = new ModLangParse();
@@ -49,7 +49,16 @@ public class ConverterRDF2RDFStar extends CmdGeneral
         modVersion.addClass(RIOT.class);
 
         super.addModule(modTime);
+
+        registerArgumentToBeIgnored("sink");
+        registerArgumentToBeIgnored("validate");
+        registerArgumentToBeIgnored("rdfs");
+
         super.addModule(modLangParse);
+
+        unregisterArgumentToBeIgnored("sink");
+        unregisterArgumentToBeIgnored("validate");
+        unregisterArgumentToBeIgnored("rdfs");
 
         super.getUsage().startCategory("Output options");
         super.add( argOutputFile, "--out   --outfile", "Output file (optional, printing to stdout if omitted)" );
