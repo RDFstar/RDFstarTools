@@ -28,6 +28,9 @@ public class SPARQLStar
     
     private static synchronized void init$()
     {
+        Syntax.querySyntaxNames.put("sparqlstar",  syntax);
+        Syntax.querySyntaxNames.put("sparql*",     syntax);
+
     	// create and register a parser factory for the SPARQL* syntax
     	final SPARQLParserFactory myParserFactory = new SPARQLParserFactory() {
     		@Override
