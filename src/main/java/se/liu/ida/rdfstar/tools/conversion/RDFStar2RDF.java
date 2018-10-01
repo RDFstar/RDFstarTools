@@ -36,7 +36,8 @@ import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
  */
 public class RDFStar2RDF
 {
-	protected final static int BUFFER_SIZE = 16000;
+	static protected final int     BUFFER_SIZE                        = 16000;
+	static protected final boolean EXPLICITILY_ADD_REIFIED_STATEMENTS = true;
 
 	public void convert( String inputFilename, OutputStream outStream )
 	{
@@ -157,6 +158,15 @@ public class RDFStar2RDF
 
 	            	if( ! first_lap )
 	            		writer.write(" .\n");
+
+	            	if ( EXPLICITILY_ADD_REIFIED_STATEMENTS ) {
+	            		nFmt.format(writer, s);
+	            		writer.write(" ");
+	            		nFmt.format(writer, p);
+		            	writer.write(" ");
+		            	nFmt.format(writer, o);
+		            	writer.write(" .\n");
+	            	}
 
 	            	nFmt.format(writer, bnode);
 	            	writer.write(" ");

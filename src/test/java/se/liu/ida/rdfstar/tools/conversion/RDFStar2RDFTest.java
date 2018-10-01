@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.util.Iterator;
 
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -47,7 +48,7 @@ public class RDFStar2RDFTest
 		final String filename = "nestedSubject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
 
-        assertEquals( 5, g.size() );
+        assertEquals( 6, g.size() );
 
         verifyNoNesting(g);
 
@@ -55,21 +56,27 @@ public class RDFStar2RDFTest
         int cntSubjectStmt = 0;
         int cntPredicateStmt = 0;
         int cntObjectStmt = 0;
+        int cntReifiedStmt = 0;
         int cntMetaStmt = 0;
 
         final Iterator<Triple> it = g.find();
         while ( it.hasNext() )
         {
         	final Triple t = it.next();
-        	if ( t.getPredicate().equals(RDF.type.asNode()) && t.getObject().equals(RDF.Statement.asNode()) )
+        	final Node p = t.getPredicate();
+        	final Node o = t.getObject();
+
+        	if ( p.equals(RDF.type.asNode()) && o.equals(RDF.Statement.asNode()) )
         		cntTypeStmt++;
-        	else if ( t.getPredicate().equals(RDF.subject.asNode()) )
+        	else if ( p.equals(RDF.subject.asNode()) )
         		cntSubjectStmt++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(DCTerms.creator.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(DCTerms.creator.asNode()) )
         		cntPredicateStmt++;
-        	else if ( t.getPredicate().equals(RDF.object.asNode()) )
+        	else if ( p.equals(RDF.object.asNode()) )
         		cntObjectStmt++;
-        	else if ( t.getPredicate().equals(DCTerms.source.asNode()) )
+        	else if ( p.equals(DCTerms.creator.asNode()) )
+        		cntReifiedStmt++;
+        	else if ( p.equals(DCTerms.source.asNode()) )
         		cntMetaStmt++;
         }
 
@@ -77,6 +84,7 @@ public class RDFStar2RDFTest
         assertEquals( 1, cntSubjectStmt );
         assertEquals( 1, cntPredicateStmt );
         assertEquals( 1, cntObjectStmt );
+        assertEquals( 1, cntReifiedStmt );
         assertEquals( 1, cntMetaStmt );
 	}
 
@@ -86,7 +94,7 @@ public class RDFStar2RDFTest
 		final String filename = "nestedObject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
 
-        assertEquals( 5, g.size() );
+        assertEquals( 6, g.size() );
 
         verifyNoNesting(g);
 
@@ -94,21 +102,27 @@ public class RDFStar2RDFTest
         int cntSubjectStmt = 0;
         int cntPredicateStmt = 0;
         int cntObjectStmt = 0;
+        int cntReifiedStmt = 0;
         int cntMetaStmt = 0;
 
         final Iterator<Triple> it = g.find();
         while ( it.hasNext() )
         {
         	final Triple t = it.next();
-        	if ( t.getPredicate().equals(RDF.type.asNode()) && t.getObject().equals(RDF.Statement.asNode()) )
+        	final Node p = t.getPredicate();
+        	final Node o = t.getObject();
+
+        	if ( p.equals(RDF.type.asNode()) && o.equals(RDF.Statement.asNode()) )
         		cntTypeStmt++;
-        	else if ( t.getPredicate().equals(RDF.subject.asNode()) )
+        	else if ( p.equals(RDF.subject.asNode()) )
         		cntSubjectStmt++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(DCTerms.creator.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(DCTerms.creator.asNode()) )
         		cntPredicateStmt++;
-        	else if ( t.getPredicate().equals(RDF.object.asNode()) )
+        	else if ( p.equals(RDF.object.asNode()) )
         		cntObjectStmt++;
-        	else if ( t.getPredicate().equals(DCTerms.source.asNode()) )
+        	else if ( p.equals(DCTerms.creator.asNode()) )
+        		cntReifiedStmt++;
+        	else if ( p.equals(DCTerms.source.asNode()) )
         		cntMetaStmt++;
         }
 
@@ -116,6 +130,7 @@ public class RDFStar2RDFTest
         assertEquals( 1, cntSubjectStmt );
         assertEquals( 1, cntPredicateStmt );
         assertEquals( 1, cntObjectStmt );
+        assertEquals( 1, cntReifiedStmt );
         assertEquals( 1, cntMetaStmt );
 	}
 
@@ -125,7 +140,7 @@ public class RDFStar2RDFTest
 		final String filename = "nestedSubjectAndObject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
 
-        assertEquals( 9, g.size() );
+        assertEquals( 11, g.size() );
 
         verifyNoNesting(g);
 
@@ -134,23 +149,32 @@ public class RDFStar2RDFTest
         int cntPredicateStmt1 = 0;
         int cntPredicateStmt2 = 0;
         int cntObjectStmt = 0;
+        int cntReifiedStmt1 = 0;
+        int cntReifiedStmt2 = 0;
         int cntMetaStmt = 0;
 
         final Iterator<Triple> it = g.find();
         while ( it.hasNext() )
         {
         	final Triple t = it.next();
-        	if ( t.getPredicate().equals(RDF.type.asNode()) && t.getObject().equals(RDF.Statement.asNode()) )
+        	final Node p = t.getPredicate();
+        	final Node o = t.getObject();
+
+        	if ( p.equals(RDF.type.asNode()) && o.equals(RDF.Statement.asNode()) )
         		cntTypeStmt++;
-        	else if ( t.getPredicate().equals(RDF.subject.asNode()) )
+        	else if ( p.equals(RDF.subject.asNode()) )
         		cntSubjectStmt++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(DCTerms.creator.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(DCTerms.creator.asNode()) )
         		cntPredicateStmt1++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(DCTerms.created.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(DCTerms.created.asNode()) )
         		cntPredicateStmt2++;
-        	else if ( t.getPredicate().equals(RDF.object.asNode()) )
+        	else if ( p.equals(RDF.object.asNode()) )
         		cntObjectStmt++;
-        	else if ( t.getPredicate().equals(DCTerms.requires.asNode()) )
+        	else if ( p.equals(DCTerms.creator.asNode()) )
+        		cntReifiedStmt1++;
+        	else if ( p.equals(DCTerms.created.asNode()) )
+        		cntReifiedStmt2++;
+        	else if ( p.equals(DCTerms.requires.asNode()) )
         		cntMetaStmt++;
         }
 
@@ -159,6 +183,8 @@ public class RDFStar2RDFTest
         assertEquals( 1, cntPredicateStmt1 );
         assertEquals( 1, cntPredicateStmt2 );
         assertEquals( 2, cntObjectStmt );
+        assertEquals( 1, cntReifiedStmt1 );
+        assertEquals( 1, cntReifiedStmt2 );
         assertEquals( 1, cntMetaStmt );
 	}
 
@@ -168,7 +194,7 @@ public class RDFStar2RDFTest
 		final String filename = "doubleNestedSubject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
 
-        assertEquals( 9, g.size() );
+        assertEquals( 11, g.size() );
 
         verifyNoNesting(g);
 
@@ -177,23 +203,32 @@ public class RDFStar2RDFTest
         int cntPredicateStmt1 = 0;
         int cntPredicateStmt2 = 0;
         int cntObjectStmt = 0;
+        int cntReifiedStmt1 = 0;
+        int cntReifiedStmt2 = 0;
         int cntMetaStmt = 0;
 
         final Iterator<Triple> it = g.find();
         while ( it.hasNext() )
         {
         	final Triple t = it.next();
-        	if ( t.getPredicate().equals(RDF.type.asNode()) && t.getObject().equals(RDF.Statement.asNode()) )
+        	final Node p = t.getPredicate();
+        	final Node o = t.getObject();
+
+        	if ( p.equals(RDF.type.asNode()) && o.equals(RDF.Statement.asNode()) )
         		cntTypeStmt++;
-        	else if ( t.getPredicate().equals(RDF.subject.asNode()) )
+        	else if ( p.equals(RDF.subject.asNode()) )
         		cntSubjectStmt++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(FOAF.knows.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(FOAF.knows.asNode()) )
         		cntPredicateStmt1++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(DCTerms.created.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(DCTerms.created.asNode()) )
         		cntPredicateStmt2++;
-        	else if ( t.getPredicate().equals(RDF.object.asNode()) )
+        	else if ( p.equals(RDF.object.asNode()) )
         		cntObjectStmt++;
-        	else if ( t.getPredicate().equals(DCTerms.source.asNode()) )
+        	else if ( p.equals(FOAF.knows.asNode()) )
+        		cntReifiedStmt1++;
+        	else if ( p.equals(DCTerms.created.asNode()) )
+        		cntReifiedStmt2++;
+        	else if ( p.equals(DCTerms.source.asNode()) )
         		cntMetaStmt++;
         }
 
@@ -202,6 +237,8 @@ public class RDFStar2RDFTest
         assertEquals( 1, cntPredicateStmt1 );
         assertEquals( 1, cntPredicateStmt2 );
         assertEquals( 2, cntObjectStmt );
+        assertEquals( 1, cntReifiedStmt1 );
+        assertEquals( 1, cntReifiedStmt2 );
         assertEquals( 1, cntMetaStmt );
 	}
 
@@ -211,7 +248,7 @@ public class RDFStar2RDFTest
 		final String filename = "doubleNestedObject.ttls";
         final Graph g = convertAndLoadIntoGraph(filename);
 
-        assertEquals( 9, g.size() );
+        assertEquals( 11, g.size() );
 
         verifyNoNesting(g);
 
@@ -220,23 +257,33 @@ public class RDFStar2RDFTest
         int cntPredicateStmt1 = 0;
         int cntPredicateStmt2 = 0;
         int cntObjectStmt = 0;
+        int cntReifiedStmt1 = 0;
+        int cntReifiedStmt2 = 0;
         int cntMetaStmt = 0;
 
         final Iterator<Triple> it = g.find();
         while ( it.hasNext() )
         {
         	final Triple t = it.next();
-        	if ( t.getPredicate().equals(RDF.type.asNode()) && t.getObject().equals(RDF.Statement.asNode()) )
+        	final Node s = t.getSubject();
+        	final Node p = t.getPredicate();
+        	final Node o = t.getObject();
+
+        	if ( p.equals(RDF.type.asNode()) && o.equals(RDF.Statement.asNode()) )
         		cntTypeStmt++;
-        	else if ( t.getPredicate().equals(RDF.subject.asNode()) )
+        	else if ( p.equals(RDF.subject.asNode()) )
         		cntSubjectStmt++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(FOAF.knows.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(FOAF.knows.asNode()) )
         		cntPredicateStmt1++;
-        	else if ( t.getPredicate().equals(RDF.predicate.asNode()) && t.getObject().equals(DCTerms.created.asNode()) )
+        	else if ( p.equals(RDF.predicate.asNode()) && o.equals(DCTerms.created.asNode()) )
         		cntPredicateStmt2++;
-        	else if ( t.getPredicate().equals(RDF.object.asNode()) )
+        	else if ( p.equals(RDF.object.asNode()) )
         		cntObjectStmt++;
-        	else if ( t.getPredicate().equals(FOAF.knows.asNode()) )
+        	else if ( p.equals(FOAF.knows.asNode()) && s.getURI().contains("alice") )
+        		cntReifiedStmt1++;
+        	else if ( p.equals(DCTerms.created.asNode()) )
+        		cntReifiedStmt2++;
+        	else if ( p.equals(FOAF.knows.asNode()) )
         		cntMetaStmt++;
         }
 
@@ -245,6 +292,8 @@ public class RDFStar2RDFTest
         assertEquals( 1, cntPredicateStmt1 );
         assertEquals( 1, cntPredicateStmt2 );
         assertEquals( 2, cntObjectStmt );
+        assertEquals( 1, cntReifiedStmt1 );
+        assertEquals( 1, cntReifiedStmt2 );
         assertEquals( 1, cntMetaStmt );
 	}
 
