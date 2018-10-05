@@ -10,6 +10,7 @@ import org.apache.jena.sparql.expr.aggregate.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.lang.SPARQLParserBase ;
+import se.liu.ida.rdfstar.tools.sparqlstar.lang.Node_TripleStarPattern;
 
 @SuppressWarnings("all")
 public class SPARQLStarParser11 extends SPARQLParserBase implements SPARQLStarParser11Constants {
@@ -5088,7 +5089,7 @@ public class SPARQLStarParser11 extends SPARQLParserBase implements SPARQLStarPa
     p = Verb();
     o = VarOrBlankNodeOrIriOrEmbTP();
     jj_consume_token(GTGT);
-    {if (true) return new Node_Triple(new Triple(s,p,o)) ;}
+    {if (true) return new Node_TripleStarPattern(new Triple(s,p,o)) ;}
     throw new Error("Missing return statement in function");
   }
 

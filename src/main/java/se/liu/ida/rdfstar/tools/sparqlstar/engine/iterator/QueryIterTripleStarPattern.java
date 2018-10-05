@@ -18,6 +18,7 @@ import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.NiceIterator;
 
 import se.liu.ida.rdfstar.tools.sparqlstar.core.ExtendedSubstitute;
+import se.liu.ida.rdfstar.tools.sparqlstar.lang.Node_TripleStarPattern;
 
 /**
  * A SPARQL*-aware version of {@link QueryIterTriplePattern}.
@@ -43,7 +44,7 @@ public class QueryIterTripleStarPattern extends QueryIterRepeatApply
                                           ExecutionContext cxt )
     {
         super(input, cxt);
-        this.tp = tp;
+        this.tp = Node_TripleStarPattern.asTripleWithNode_TripleStarPatterns(tp);
     }
 
     @Override
@@ -77,19 +78,22 @@ public class QueryIterTripleStarPattern extends QueryIterRepeatApply
             this.oIsTripleWithVars = isTripleWithVars(o);
             this.binding = binding;
 
-            final Node s2 = sIsTripleWithVars ? Node.ANY : tripleNode(s);
-            final Node p2 = tripleNode(p);
-            final Node o2 = oIsTripleWithVars ? Node.ANY : tripleNode(o);
+            final Node s2 = sIsTripleWithVars ? Node.ANY : convertToBeUsedForFind(s);
+            final Node p2 = convertToBeUsedForFind(p);
+            final Node o2 = oIsTripleWithVars ? Node.ANY : convertToBeUsedForFind(o);
 
             final Graph graph = cxt.getActiveGraph();
             this.graphIter = graph.find(s2, p2, o2);
         }
 
-        static protected Node tripleNode( Node node )
+        static protected Node convertToBeUsedForFind( Node node )
         {
-            if ( node.isVariable() )
+            if ( node instanceof Node_Triple )
+            	return Node_TripleStarPattern.asNode_TripleStarPattern( (Node_Triple) node );
+            else if ( node.isVariable() )
                 return Node.ANY;
-            return node;
+            else
+            	return node;
         }
 
         static protected boolean isTripleWithVars( Node node )

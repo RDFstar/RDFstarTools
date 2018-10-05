@@ -11,6 +11,7 @@ package se.liu.ida.rdfstar.tools.sparqlstar.lang.sparqlstar ;
 
 
 
+
 /** Token Manager. */
 public class SPARQLStarParser11TokenManager implements SPARQLStarParser11Constants
 {

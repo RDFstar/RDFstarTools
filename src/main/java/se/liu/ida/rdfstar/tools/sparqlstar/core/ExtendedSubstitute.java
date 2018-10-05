@@ -8,6 +8,8 @@ import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.engine.binding.Binding;
 
+import se.liu.ida.rdfstar.tools.sparqlstar.lang.Node_TripleStarPattern;
+
 /**
  * A SPARQL*-aware extension of {@link Substitute}.
  * 
@@ -80,7 +82,7 @@ public class ExtendedSubstitute extends Substitute
     		if ( t1 == t2 )
     			return n;
     		else
-    			return new Node_Triple(t2);
+    			return new Node_TripleStarPattern(t2);
     	}
     	else
     		return Substitute.substitute(n, b);
