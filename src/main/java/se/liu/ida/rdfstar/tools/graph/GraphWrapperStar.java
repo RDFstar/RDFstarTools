@@ -15,7 +15,18 @@ import org.apache.jena.sparql.graph.GraphWrapper;
  */
 public class GraphWrapperStar extends GraphWrapper
 {
-	public GraphWrapperStar( Graph g ) { super(g); }
+	public GraphWrapperStar( Graph g )
+	{
+		super( checkIsEmpty(g) );
+	}
+
+	static public Graph checkIsEmpty( Graph g ) throws IllegalArgumentException
+	{
+		if ( ! g.isEmpty() )
+			throw new IllegalArgumentException("The graph to be wrapped is not empty.");
+
+		return g;
+	}
 
 	@Override
     public void add( Triple t ) throws AddDeniedException
