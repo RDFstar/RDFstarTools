@@ -67,6 +67,20 @@ public class RDFStarUtils
 	}
 
 	/**
+	 * Returns a redundancy-augmented {@link Graph} populated
+	 * with the RDF* data in the given Turtle* serialization.
+	 * 
+	 * @see {@link GraphWrapperStar}
+	 */
+	static public Graph createRedundancyAugmentedGraphFromTurtleStarSnippet( String snippet )
+	{
+	    final Graph g = ModelFactory.createDefaultModel().getGraph();
+	    final Graph gstar = new GraphWrapperStar(g);
+	    populateGraphFromTurtleStarSnippet(gstar, snippet);
+		return gstar;
+	}
+
+	/**
 	 * Adds the RDF* data from the given Turtle* serialization
 	 * to the given {@link Graph}. 
 	 */
