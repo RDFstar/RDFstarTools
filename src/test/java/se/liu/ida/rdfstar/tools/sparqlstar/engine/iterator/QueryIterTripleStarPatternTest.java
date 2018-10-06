@@ -24,7 +24,7 @@ import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.util.Context;
 import org.junit.Test;
 
-import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStarTest;
+import se.liu.ida.rdfstar.tools.graph.RDFStarUtils;
 import se.liu.ida.rdfstar.tools.sparqlstar.lang.Node_TripleStarPattern;
 
 /**
@@ -324,6 +324,52 @@ public class QueryIterTripleStarPatternTest
 		it.close();
 	}
 
+	@Test
+	public void matchObjectRequiresRedundancyAugmentation()
+	{
+		// ex:s ex:p ?V3
+		final Triple tp = new Triple( $s(), $p(), $V3() );
+
+		final Binding inputBinding = BindingFactory.binding();
+		final ExecutionContext execCxt = createTestExecCxt();
+		final QueryIterator input = QueryIterSingleton.create(inputBinding, execCxt);
+
+		final QueryIterator it = QueryIterTripleStarPattern.create( input, tp, execCxt );
+		assertTrue( it.hasNext() );
+
+		final Binding outputBinding = it.nextBinding();
+		assertEquals( 1, outputBinding.size() );
+
+		assertEquals( $o(), outputBinding.get($V3()) );
+
+		assertFalse( it.hasNext() ); 
+		it.close();
+	}
+
+	@Test
+	public void matchSubjectWithGivenObjectRequiresRedundancyAugmentation()
+	{
+		// ?V1 ex:p ?V3
+		final Triple tp = new Triple( $V1(), $p(), $V3() );
+
+		// ?V3 --> ex:x1
+		final Binding inputBinding = BindingFactory.binding( $V3(), $o() );
+		final ExecutionContext execCxt = createTestExecCxt();
+		final QueryIterator input = QueryIterSingleton.create(inputBinding, execCxt);
+
+		final QueryIterator it = QueryIterTripleStarPattern.create( input, tp, execCxt );
+		assertTrue( it.hasNext() );
+
+		final Binding outputBinding = it.nextBinding();
+		assertEquals( 2, outputBinding.size() );
+
+		assertEquals( $s(), outputBinding.get($V1()) );
+		assertEquals( $o(), outputBinding.get($V3()) );
+
+		assertFalse( it.hasNext() ); 
+		it.close();
+	}
+
 
 	// --- helpers ---
 
@@ -348,7 +394,7 @@ public class QueryIterTripleStarPatternTest
 				"ex:x1  ex:m1  << ex:s ex:p ex:o >> . " +
 				"ex:x2  ex:m2  << ex:s ex:p ex:o >> . ";
 
-		return LangTurtleStarTest.createGraphFromTurtleStarSnippet(ttlsString);
+		return RDFStarUtils.createRedundancyAugmentedGraphFromTurtleStarSnippet(ttlsString);
 	}
 
 	protected ExecutionContext createTestExecCxt()
