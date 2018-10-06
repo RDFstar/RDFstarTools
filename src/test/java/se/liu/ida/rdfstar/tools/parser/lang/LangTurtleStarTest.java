@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringReader;
 import java.util.Iterator;
 
 import org.apache.jena.graph.Graph;
@@ -19,6 +18,8 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import se.liu.ida.rdfstar.tools.graph.RDFStarUtils;
 
 /**
  * 
@@ -47,7 +48,7 @@ public class LangTurtleStarTest {
 	@Test
 	public void stringParse1() {
         final String x = "<<<s> <p> <o>>> <p2> <o2> .";
-        final Graph g = createGraphFromTurtleStarSnippet(x);
+        final Graph g = RDFStarUtils.createGraphFromTurtleStarSnippet(x);
 
         assertEquals( 1, g.size() );
 
@@ -60,7 +61,7 @@ public class LangTurtleStarTest {
 	@Test
 	public void stringParse2() {
         final String x = "<s2> <p2> <<<s> <p> <o>>> .";
-        final Graph g = createGraphFromTurtleStarSnippet(x);
+        final Graph g = RDFStarUtils.createGraphFromTurtleStarSnippet(x);
 
         assertEquals( 1, g.size() );
 
@@ -73,7 +74,7 @@ public class LangTurtleStarTest {
 	@Test
 	public void stringParse3() {
         final String x = "<<<s> <p> <o>>> <p2> <<<s> <p> <o>>> .";
-        final Graph g = createGraphFromTurtleStarSnippet(x);
+        final Graph g = RDFStarUtils.createGraphFromTurtleStarSnippet(x);
 
         assertEquals( 1, g.size() );
 
@@ -86,7 +87,7 @@ public class LangTurtleStarTest {
 	@Test
 	public void stringParse4() {
         final String x = "<< <s> <p> <<<s> <p> <o>>> >> <p2> <o2> .";
-        final Graph g = createGraphFromTurtleStarSnippet(x);
+        final Graph g = RDFStarUtils.createGraphFromTurtleStarSnippet(x);
 
         assertEquals( 1, g.size() );
 
@@ -104,7 +105,7 @@ public class LangTurtleStarTest {
 	@Test
 	public void stringParse5() {
         final String x = "<<<s> <p> <o>>> <p2> <o2> , <o3> .";
-        final Graph g = createGraphFromTurtleStarSnippet(x);
+        final Graph g = RDFStarUtils.createGraphFromTurtleStarSnippet(x);
 
         assertEquals( 2, g.size() );
 
@@ -128,7 +129,7 @@ public class LangTurtleStarTest {
 	@Test
 	public void stringParse6() {
         final String x = "<<<s> <p> <o>>> <p2> <o2> ; <p3> <o3> .";
-        final Graph g = createGraphFromTurtleStarSnippet(x);
+        final Graph g = RDFStarUtils.createGraphFromTurtleStarSnippet(x);
 
         assertEquals( 2, g.size() );
 
@@ -152,7 +153,7 @@ public class LangTurtleStarTest {
 	@Test
 	public void stringParse7() {
         final String x = "<s2> <p2> <o2> , <<<s> <p> <o>>> .";
-        final Graph g = createGraphFromTurtleStarSnippet(x);
+        final Graph g = RDFStarUtils.createGraphFromTurtleStarSnippet(x);
 
         assertEquals( 2, g.size() );
 
@@ -187,19 +188,6 @@ public class LangTurtleStarTest {
 
 
 	// ---- helpers ----
-
-	static public Graph createGraphFromTurtleStarSnippet( String snippet ) {
-		final StringReader reader = new StringReader(snippet);
-        final Graph g = ModelFactory.createDefaultModel().getGraph();
-        final StreamRDF dest = StreamRDFLib.graph(g);
-
-        RDFParser.create()
-                 .source(reader)
-                 .lang(LangTurtleStar.TURTLESTAR)
-                 .parse(dest);
-
-		return g;
-	}
 
 	protected Graph loadGraphFromTurtleStarFile( String filename ) {
 

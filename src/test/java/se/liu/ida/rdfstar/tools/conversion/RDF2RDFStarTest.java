@@ -15,7 +15,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.DCTerms;
 import org.junit.Test;
 
-import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStarTest;
+import se.liu.ida.rdfstar.tools.graph.RDFStarUtils;
 
 /**
  * 
@@ -159,7 +159,7 @@ public class RDF2RDFStarTest
 			fail( "Closing the output stream failed: " + e.getMessage() );
 		}
 
-		return LangTurtleStarTest.createGraphFromTurtleStarSnippet(result);
+		return RDFStarUtils.createGraphFromTurtleStarSnippet(result);
 	}
 
 }
