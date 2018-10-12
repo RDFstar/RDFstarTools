@@ -31,10 +31,17 @@ public class QueryIterTripleStarPattern extends QueryIterRepeatApply
                                         Triple tp,
                                         ExecutionContext cxt )
 	{
-		if ( tp.getSubject() instanceof Node_Triple || tp.getObject() instanceof Node_Triple )
+		if (   tp.getSubject() instanceof Node_Triple
+		    || tp.getObject()  instanceof Node_Triple
+			|| tp.getSubject().isVariable()
+			|| tp.getObject().isVariable() )
+		{
 			return new QueryIterTripleStarPattern(input, tp, cxt);
+		}
 		else
+		{
 			return new QueryIterTriplePattern(input, tp, cxt);
+		}
 	}
 
     final protected Triple tp;
