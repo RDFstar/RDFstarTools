@@ -302,17 +302,16 @@ public class RDFStar2RDFTest
 
 	protected Graph convertAndLoadIntoGraph( String filename )
 	{
-		final String fullFilename = getClass().getResource("/TurtleStar/"+filename).getFile();
-		final ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-		new RDFStar2RDF().convert(fullFilename, os);
-		final String result = os.toString();
-		try {
-			os.close();
-		}
-		catch ( IOException e ) {
-			fail( "Closing the output stream failed: " + e.getMessage() );
-		}
+	    final String fullFilename = getClass().getResource("/TurtleStar/"+filename).getFile();
+	    String result;
+	    try( ByteArrayOutputStream os = new ByteArrayOutputStream() ) {
+	        new RDFStar2RDF().convert(fullFilename, os);
+	        result = os.toString();
+	    }
+	    catch ( IOException e ) {
+	        fail( "Closing the output stream failed: " + e.getMessage() );
+	        return null;
+	    }
 
 		final StringReader reader = new StringReader(result);
         final Graph g = ModelFactory.createDefaultModel().getGraph();

@@ -20,7 +20,6 @@ package se.liu.ida.rdfstar.tools.sparqlstar.sys;
 
 import org.apache.jena.sys.JenaSubsystemLifecycle;
 import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
-import se.liu.ida.rdfstar.tools.sparqlstar.lang.ParserSPARQLStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.lang.SPARQLStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.resultset.ResultSetWritersSPARQLStar;
 

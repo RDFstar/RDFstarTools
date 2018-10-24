@@ -68,38 +68,38 @@ public class RDF2RDFStar
 		fp.execute();
 
 		// print all prefixes and the base IRI to the output file
-		final IndentedWriter writer = new IndentedWriter(outStream);
-		RiotLib.writePrefixes(writer, fp.getPrefixMap());
-		RiotLib.writeBase(writer, fp.getBaseIRI());
+		try( IndentedWriter writer = new IndentedWriter(outStream) ) {
+		    RiotLib.writePrefixes(writer, fp.getPrefixMap());
+		    RiotLib.writeBase(writer, fp.getBaseIRI());
 
-		// second pass over the file to perform the conversion in a streaming manner
-		// (PipedTriplesStream and PipedRDFIterator need to be on different threads!!)
-		final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
-		final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
+		    // second pass over the file to perform the conversion in a streaming manner
+		    // (PipedTriplesStream and PipedRDFIterator need to be on different threads!!)
+		    final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
+		    final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-		final Parser p = new Parser(inputFilename, triplesStream, enableChecking);
+		    final Parser p = new Parser(inputFilename, triplesStream, enableChecking);
 
-		if ( baseIRI != null )
-			p.setBaseIRI(baseIRI);
+		    if ( baseIRI != null )
+		        p.setBaseIRI(baseIRI);
 
-		if ( inputLang != null )
-			p.setLang(inputLang);
+		    if ( inputLang != null )
+		        p.setLang(inputLang);
 
-		if ( errHandler != null )
-			p.setErrorHandler(errHandler);
+		    if ( errHandler != null )
+		        p.setErrorHandler(errHandler);
 
-		final ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.submit(p);
+		    final ExecutorService executor = Executors.newSingleThreadExecutor();
+		    executor.submit(p);
 
-		final NodeFormatter nFmt = new NodeFormatterTurtleStarExtImpl(fp.getBaseIRI(), fp.getPrefixMap());
-		printTriples(writer, nFmt, it, fp.getReifiedTriples());
+		    final NodeFormatter nFmt = new NodeFormatterTurtleStarExtImpl(fp.getBaseIRI(), fp.getPrefixMap());
+		    printTriples(writer, nFmt, it, fp.getReifiedTriples());
 
-		it.close();
-		executor.shutdown();
+		    it.close();
+		    executor.shutdown();
 
-		writer.write(" .");
-		writer.flush();
-		writer.close();
+		    writer.write(" .");
+		    writer.flush();
+		}
 	}
 
 	/**
@@ -268,8 +268,8 @@ public class RDF2RDFStar
 		{
 			if ( rt == null ) {
 				rt = new ReifiedTriples() {
-					public boolean contains(Node id) { return reificationStmts.containsKey(id); }
-					public Node[] get(Node id) { return reificationStmts.get(id); }
+				    @Override public boolean contains(Node id) { return reificationStmts.containsKey(id); }
+				    @Override public Node[] get(Node id) { return reificationStmts.get(id); }
 				};
 			}
 
