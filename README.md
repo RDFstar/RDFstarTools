@@ -4,7 +4,7 @@ This package provides a collection of tools and Java libraries to process RDF* d
 **New to RDF\*?** If you want to know what RDF* is about, please refer to our short (4-page) paper ["RDF* and SPARQL*: An Alternative Approach to Annotate Statements in RDF."](http://olafhartig.de/files/Hartig_ISWC2017_RDFStarPosterPaper.pdf)
 
 ## Turtle* Parser
-The Turtle* parser extends the RIOT parser framework of Apache Jena with support for the Turtle* format. If you have the RDFstarTools JAR in your build path and you call `LangTurtleStar.init();` before using the parser (e.g., at the begin of your `main` function), the parser should automatically recognize Turtle* files by the extension ".ttls". Then, the `Triple` objects produced by the parser may have a `Node` object as their subject or their object that is of the type `Node_Triple`.
+The Turtle* parser extends the RIOT parser framework of Apache Jena with support for the Turtle* format. If you have the RDFstarTools JAR in your build path, the parser should automatically recognize Turtle* files by the extension ".ttls". Then, the `Triple` objects produced by the parser may have a `Node` object as their subject or their object that is of the type `Node_Triple`.
 
 To consume the output of the (extended) parser via a `StreamRDF` object you may use the following source code snippet.
 ```
@@ -66,7 +66,7 @@ String queryString = ...
 ParserSPARQLStar parser = new ParserSPARQLStar();
 Query query = parser.parse(new Query(), queryString);
 ```
-The second option is to use the parser via Jena's query parser framework. To this end, the parser has to be registered in this framework, which should happen automatically when you use the symbol `ParserSPARQLStar.syntaxSPARQLstar` as demonstrated in the following (if it does not work, try to call `ParserSPARQLStar.init();`).
+The second option is to use the parser via Jena's query parser framework. To this end, the parser has to be registered in this framework, which should happen automatically when you use the symbol `ParserSPARQLStar.syntaxSPARQLstar` as demonstrated in the following.
 ```
 String queryString = ...
 

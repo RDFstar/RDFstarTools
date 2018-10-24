@@ -43,7 +43,6 @@ public class QueryExecutionTest
 	@Before
 	public void setup()
 	{
-		LangTurtleStar.init();
 		StageBuilder.setGenerator(ARQ.getContext(), new StageGeneratorSPARQLStar());
 	}
 
