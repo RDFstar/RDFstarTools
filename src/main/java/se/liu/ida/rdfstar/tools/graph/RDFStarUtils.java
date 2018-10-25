@@ -70,7 +70,7 @@ public class RDFStarUtils
 	 * Returns a redundancy-augmented {@link Graph} populated
 	 * with the RDF* data in the given Turtle* serialization.
 	 * 
-	 * @see {@link GraphWrapperStar}
+	 * @see GraphWrapperStar
 	 */
 	static public Graph createRedundancyAugmentedGraphFromTurtleStarSnippet( String snippet )
 	{

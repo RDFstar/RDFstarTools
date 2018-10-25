@@ -15,7 +15,7 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.Prologue;
 
 /**
- * A {@link Sink<Triple>} implementation that can be used for simple NTriples-style
+ * A {@link Sink} implementation that can be used for simple NTriples-style
  * writing of RDF* data by using the Turtle* format for nested triples.
  * 
  * To this end, by using a {@link NodeFormatterTurtleStar} internally, the method

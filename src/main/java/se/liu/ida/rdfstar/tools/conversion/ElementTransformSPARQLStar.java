@@ -52,7 +52,7 @@ public class ElementTransformSPARQLStar extends ElementTransformCopyBase
 		{
 			final NodeValue nv = (NodeValue) eb.getExpr();
 			final Node_Triple nt = (Node_Triple) nv.getNode();
-			final Triple tp = ( (Node_Triple) nt ).get();
+			final Triple tp = nt.get();
 
 			final ElementPathBlock epb = new ElementPathBlock();
 			unNestBindClause(tp, epb, v);

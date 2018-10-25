@@ -81,42 +81,42 @@ public class RDFStar2RDF
 
 		public void execute()
 		{
-			// print all prefixes and the base IRI to the output file
-			final IndentedWriter writer = new IndentedWriter(outStream);
-			RiotLib.writePrefixes(writer, pmap);
-			RiotLib.writeBase(writer, baseIRI);
+		    // print all prefixes and the base IRI to the output file
+		    try ( IndentedWriter writer = new IndentedWriter(outStream) ) {
+		        RiotLib.writePrefixes(writer, pmap);
+		        RiotLib.writeBase(writer, baseIRI);
 
-			// second pass over the file to perform the conversion in a streaming manner
-			final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
-			final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
+		        // second pass over the file to perform the conversion in a streaming manner
+		        final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(BUFFER_SIZE);
+		        final PipedTriplesStream triplesStream = new PipedTriplesStream(it);
 
-			// PipedRDFStream and PipedRDFIterator need to be on different threads
-			final Runnable r = new Runnable() {
-				@Override
-				public void run() {
-					RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
-	                  .source(inputFilename)
-	                  .lang(LangTurtleStar.TURTLESTAR)
-			          .base(baseIRI)
-	                  .build()
-	                  .parse(triplesStream);
-				}
-			};
-			final ExecutorService executor = Executors.newSingleThreadExecutor();
-			executor.submit(r);
+		        // PipedRDFStream and PipedRDFIterator need to be on different threads
+		        final Runnable r = new Runnable() {
+		            @Override
+		            public void run() {
+		                RDFParser.create().labelToNode( LabelToNode.createUseLabelEncoded() )
+		                .source(inputFilename)
+		                .lang(LangTurtleStar.TURTLESTAR)
+		                .base(baseIRI)
+		                .build()
+		                .parse(triplesStream);
+		            }
+		        };
+		        final ExecutorService executor = Executors.newSingleThreadExecutor();
+		        executor.submit(r);
 
-			final NodeFormatter nFmt = new NodeFormatterTTL(baseIRI, pmap);
+		        final NodeFormatter nFmt = new NodeFormatterTTL(baseIRI, pmap);
 
-			while ( it.hasNext() ) {
-				printTriples(it.next(), writer, nFmt, false);
-			}
+		        while ( it.hasNext() ) {
+		            printTriples(it.next(), writer, nFmt, false);
+		        }
 
-			it.close();
-			executor.shutdown();
+		        it.close();
+		        executor.shutdown();
 
-			writer.write(" .");
-			writer.flush();
-			writer.close();
+		        writer.write(" .");
+		        writer.flush();
+		    }
 		}
 
 		/**

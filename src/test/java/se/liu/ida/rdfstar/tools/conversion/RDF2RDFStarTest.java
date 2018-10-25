@@ -147,19 +147,13 @@ public class RDF2RDFStarTest
 	protected Graph convertAndLoadIntoGraph( String filename )
 	{
 		final String fullFilename = getClass().getResource("/RDF/"+filename).getFile();
-		final ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-		new RDF2RDFStar().convert(fullFilename, os);
-		final String result = os.toString();
-
-		try {
-			os.close();
-		}
-		catch ( IOException e ) {
-			fail( "Closing the output stream failed: " + e.getMessage() );
-		}
-
-		return RDFStarUtils.createGraphFromTurtleStarSnippet(result);
+		try( ByteArrayOutputStream os = new ByteArrayOutputStream() ) {
+    		new RDF2RDFStar().convert(fullFilename, os);
+    		final String result = os.toString();
+    		return RDFStarUtils.createGraphFromTurtleStarSnippet(result);
+		} catch ( IOException e ) {
+            fail( "Closing the output stream failed: " + e.getMessage() );
+            return null;
+        }
 	}
-
 }

@@ -1,5 +1,8 @@
 package se.liu.ida.rdfstar.tools;
 
+import arq.query;
+import arq.cmdline.ModDataset;
+import arq.cmdline.ModDatasetGeneral;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -7,24 +10,14 @@ import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.main.StageBuilder;
-
-import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.core.DatasetGraphWrapperStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.engine.main.StageGeneratorSPARQLStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.lang.SPARQLStar;
-import se.liu.ida.rdfstar.tools.sparqlstar.resultset.ResultSetWritersSPARQLStar;
-
-import arq.query;
-import arq.cmdline.ModDataset;
-import arq.cmdline.ModDatasetGeneral;
 
 public class ExecuteSPARQLStar extends query
 {
     public static void main( String... argv )
     {
-    	LangTurtleStar.init();
-    	ResultSetWritersSPARQLStar.init();
-
         new ExecuteSPARQLStar(argv).mainRun();
     }
 

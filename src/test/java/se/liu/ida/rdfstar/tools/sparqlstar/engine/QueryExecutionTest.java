@@ -4,15 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.graph.Graph;
-import org.apache.jena.query.ARQ;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
@@ -22,10 +14,8 @@ import org.apache.jena.sparql.engine.main.StageBuilder;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Before;
 import org.junit.Test;
-
 import se.liu.ida.rdfstar.tools.graph.GraphWrapperStar;
 import se.liu.ida.rdfstar.tools.graph.RDFStarUtils;
-import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.core.DatasetGraphWrapperStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.engine.main.StageGeneratorSPARQLStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.lang.SPARQLStar;
@@ -43,7 +33,6 @@ public class QueryExecutionTest
 	@Before
 	public void setup()
 	{
-		LangTurtleStar.init();
 		StageBuilder.setGenerator(ARQ.getContext(), new StageGeneratorSPARQLStar());
 	}
 

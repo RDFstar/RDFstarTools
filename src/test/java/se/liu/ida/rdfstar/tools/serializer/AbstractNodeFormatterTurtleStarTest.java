@@ -19,11 +19,10 @@ public abstract class AbstractNodeFormatterTurtleStarTest
 	}
 
 	protected String serialize( Node n ) {
-		final StringWriter w = new StringWriter();
-		final AWriter aw = Writer2.wrap(w);
-		formatter.format(aw, n);
-		aw.close();
+		StringWriter w = new StringWriter();
+		try ( AWriter aw = Writer2.wrap(w) ) {
+		    formatter.format(aw, n);
+		}
 		return w.toString();
 	}
-
 }

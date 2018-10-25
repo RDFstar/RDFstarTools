@@ -76,23 +76,17 @@ public class SinkTripleStarOutputTest
 	}
 
 	public String serialize( Triple t, String base, PrefixMap pmap ) {
-		ByteArrayOutputStream outstream = new ByteArrayOutputStream();
-
-		final SinkTripleStarOutput out = new SinkTripleStarOutput(
-				outstream,
-				base,
-				pmap,
-				NodeToLabel.createScopeByDocument());
-
-		out.send( t );
-		out.close();
-		try {
-			outstream.close();
-		}
-		catch ( IOException e ) {
-			throw new IllegalStateException("closing the output stream failed", e);
-		}
-		return outstream.toString();
+	    try ( ByteArrayOutputStream outstream = new ByteArrayOutputStream() ) {
+	        final SinkTripleStarOutput out = new SinkTripleStarOutput(
+	            outstream,
+	            base,
+	            pmap,
+	            NodeToLabel.createScopeByDocument());
+	        out.send( t );
+	        out.close();
+	        return outstream.toString();
+		}         catch ( IOException e ) {
+            throw new IllegalStateException("closing the output stream failed", e);
+        }
 	}
-
 }

@@ -69,18 +69,21 @@ public class SPARQLStar
 			this.wrappedFactory = wrappedFactory;
 		}
 
-		public boolean accept(Syntax s) {
+		@Override
+        public boolean accept(Syntax s) {
 			if (s.equals(syntax))
 				return true;
 			else
 				return wrappedFactory.accept(s);
 		}
 
-		public QueryVisitor create(Syntax syntax, Prologue prologue, IndentedWriter writer) {
+		@Override
+        public QueryVisitor create(Syntax syntax, Prologue prologue, IndentedWriter writer) {
 			return wrappedFactory.create(syntax, prologue, writer);
 		}
 
-		public QueryVisitor create(Syntax syntax, SerializationContext context, IndentedWriter writer) {
+		@Override
+        public QueryVisitor create(Syntax syntax, SerializationContext context, IndentedWriter writer) {
 			return wrappedFactory.create(syntax, context, writer);
 		}
 	} // end of class MyQuerySerializerFactory
