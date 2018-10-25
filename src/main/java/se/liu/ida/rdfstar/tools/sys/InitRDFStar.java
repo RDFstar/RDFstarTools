@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package se.liu.ida.rdfstar.tools.sparqlstar.sys;
+package se.liu.ida.rdfstar.tools.sys;
 
 import org.apache.jena.sys.JenaSubsystemLifecycle;
 import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
