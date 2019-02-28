@@ -1,7 +1,7 @@
 # RDFstarTools
 This package provides a collection of command line tools and Java libraries to process RDF* data and SPARQL* queries.
 
-**New to RDF\*?** If you want to know what RDF* is about, please refer to our short [position statement: "The RDF* and SPARQL* Approach to Annotate Statements in RDF and to Reconcile RDF and Property Graphs."](http://blog.liu.se/olafhartig/2019/01/10/position-statement-rdf-star-and-sparql-star/)
+**New to RDF\* and SPARQL\*?** If you want to know what RDF* and SPARQL* are about, please refer to our short [position statement: "The RDF* and SPARQL* Approach to Annotate Statements in RDF and to Reconcile RDF and Property Graphs."](http://blog.liu.se/olafhartig/2019/01/10/position-statement-rdf-star-and-sparql-star/)
 
 ## Tools
 The command line tools available in this collection are:
@@ -16,3 +16,6 @@ The core components of the Java source code of the aforementioned tools are RDF*
 * [a parser for the Turtle* format](https://github.com/RDFstar/RDFstarTools/blob/master/docs/SPARQLStarParser.md),
 * [a simple Turtle*-like serializer](https://github.com/RDFstar/RDFstarTools/blob/master/docs/SimpleTurtleStarSerializer.md), and
 * [a parser for SPARQL* queries](https://github.com/RDFstar/RDFstarTools/blob/master/docs/TurtleStarParser.md).
+
+## Property Graphs?
+For a collection of command line tools and Java libraries that the connect the RDF* data model and Property Graphs refer to our [RDFstarPGConnectionTools](https://github.com/RDFstar/RDFstarPGConnectionTools).
