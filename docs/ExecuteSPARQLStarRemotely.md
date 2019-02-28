@@ -1,6 +1,6 @@
 # ExecuteSPARQLStarRemotely
 
-This tool can be used to execute a SPARQL representation of a given SPARQL* query over RDF reification data in a SPARQL endpoint. More specifically, this tool rewrites the given SPARQL* query into a SPARQL query (see ConverterSPARQLStar2SPARQL) and then has this SPARQL query executed by the given SPARQL endpoint.
+This tool can be used to execute a SPARQL representation of a given SPARQL* query over RDF reification data in a SPARQL endpoint. More specifically, this tool rewrites the given SPARQL* query into a SPARQL query (see [ConverterSPARQLStar2SPARQL](https://github.com/RDFstar/RDFstarTools/blob/master/docs/ConverterSPARQLStar2SPARQL.md)) and then has this SPARQL query executed by the given SPARQL endpoint.
 
 ```
 se.liu.ida.rdfstar.tools.ExecuteSPARQLStarRemotely --service endpointURL --query <file>
