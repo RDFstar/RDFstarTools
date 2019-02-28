@@ -18,4 +18,4 @@ The core components of the Java source code of the aforementioned tools are RDF*
 * [a parser for SPARQL* queries](https://github.com/RDFstar/RDFstarTools/blob/master/docs/TurtleStarParser.md).
 
 ## Property Graphs?
-For a collection of command line tools and Java libraries that the connect the RDF* data model and Property Graphs refer to our [RDFstarPGConnectionTools](https://github.com/RDFstar/RDFstarPGConnectionTools).
+For a collection of command line tools and Java libraries that connect the RDF* data model and Property Graphs refer to our [RDFstarPGConnectionTools](https://github.com/RDFstar/RDFstarPGConnectionTools).
