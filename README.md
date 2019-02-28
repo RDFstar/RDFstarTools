@@ -5,14 +5,14 @@ This package provides a collection of command line tools and Java libraries to p
 
 ## Tools
 The command line tools available in this collection are:
-* a tool to convert RDF data into RDF* data,
-* a tool to convert RDF* data into RDF data,
-* a tool to rewrite SPARQL* queries into SPARQL queries,
-* a tool to execute SPARQL* queries over RDF* data, and
-* a tool to execute SPARQL* queries over RDF reification data in a SPARQL endpoint.
+* [a tool to convert RDF data into RDF* data](https://github.com/RDFstar/RDFstarTools/blob/master/docs/ConverterRDF2RDFStar.md),
+* [a tool to convert RDF* data into RDF data](https://github.com/RDFstar/RDFstarTools/blob/master/docs/ConverterRDFStar2RDF.md),
+* [a tool to rewrite SPARQL* queries into SPARQL queries](https://github.com/RDFstar/RDFstarTools/blob/master/docs/ConverterSPARQLStar2SPARQL.md),
+* [a tool to execute SPARQL* queries over RDF* data](https://github.com/RDFstar/RDFstarTools/blob/master/docs/ExecuteSPARQLStar.md), and
+* [a tool to execute SPARQL* queries over RDF reification data in a SPARQL endpoint](https://github.com/RDFstar/RDFstarTools/blob/master/docs/ExecuteSPARQLStarRemotely.md).
 
 ## Java libraries
-The Java source code of the aforementioned tools is an RDF*/SPARQL*-aware extension of the Apache Jena framework for building RDF-based applications. Hence, the Java classes in this repository may also be used directly for building RDF*-based and/or SPARQL*-based applications. In particular, the source code contains contains the following components:
+The core components of the Java source code of the aforementioned tools are RDF*/SPARQL*-aware extensions for the Apache Jena framework for building RDF-based applications. Hence, the source code in this repository may also be used as a Java library for building RDF*-based and/or SPARQL*-based applications. In particular, the source code contains the following components:
 * [a parser for the Turtle* format](https://github.com/RDFstar/RDFstarTools/blob/master/docs/SPARQLStarParser.md),
 * [a simple Turtle*-like serializer](https://github.com/RDFstar/RDFstarTools/blob/master/docs/SimpleTurtleStarSerializer.md), and
 * [a parser for SPARQL* queries](https://github.com/RDFstar/RDFstarTools/blob/master/docs/TurtleStarParser.md).
