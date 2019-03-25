@@ -6,11 +6,14 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 
+import org.apache.jena.sparql.core.DatasetGraph;
+import se.liu.ida.rdfstar.tools.parser.lang.LangTrigStar;
 import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
 
 /**
@@ -93,6 +96,46 @@ public class RDFStarUtils
 	             .source(reader)
 	             .lang(LangTurtleStar.TURTLESTAR)
 	             .parse(dest);
+	}
+
+	/**
+	 * Returns a {@link DatasetGraph} populated with the RDF* data
+	 * in the given Trig* serialization.
+	 */
+	static public DatasetGraph createDatasetGraphFromTrigStarSnippet(String snippet )
+	{
+		final DatasetGraph ds = DatasetFactory.create().asDatasetGraph();
+		populateDatasetGraphFromTrigStarSnippet(ds, snippet);
+		return ds;
+	}
+
+	/**
+	 * Returns a redundancy-augmented {@link DatasetGraph} populated
+	 * with the RDF* data in the given Trig* serialization.
+	 *
+	 * @see GraphWrapperStar
+	 */
+	static public DatasetGraph createRedundancyAugmentedDatasetGraphFromTrigStarSnippet(String snippet )
+	{
+		final DatasetGraph ds = DatasetFactory.create().asDatasetGraph();
+		final DatasetGraph dsstar = new DatasetGraphWrapperStar(ds);
+		populateDatasetGraphFromTrigStarSnippet(dsstar, snippet);
+		return dsstar;
+	}
+
+	/**
+	 * Adds the RDF* data from the given Trig* serialization
+	 * to the given {@link DatasetGraph}.
+	 */
+	static public void populateDatasetGraphFromTrigStarSnippet(DatasetGraph datasetGraph, String snippet )
+	{
+		final StringReader reader = new StringReader(snippet);
+		final StreamRDF dest = StreamRDFLib.dataset(datasetGraph);
+
+		RDFParser.create()
+				.source(reader)
+				.lang(LangTrigStar.TRIGSTAR)
+				.parse(dest);
 	}
 
 }

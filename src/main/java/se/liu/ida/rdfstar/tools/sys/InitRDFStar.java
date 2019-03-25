@@ -19,6 +19,7 @@
 package se.liu.ida.rdfstar.tools.sys;
 
 import org.apache.jena.sys.JenaSubsystemLifecycle;
+import se.liu.ida.rdfstar.tools.parser.lang.LangTrigStar;
 import se.liu.ida.rdfstar.tools.parser.lang.LangTurtleStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.lang.SPARQLStar;
 import se.liu.ida.rdfstar.tools.sparqlstar.resultset.ResultSetWritersSPARQLStar;
@@ -28,6 +29,7 @@ public class InitRDFStar implements JenaSubsystemLifecycle {
     @Override
     public void start() {
         LangTurtleStar.init();
+        LangTrigStar.init();
         SPARQLStar.init();
         ResultSetWritersSPARQLStar.init();
     }
