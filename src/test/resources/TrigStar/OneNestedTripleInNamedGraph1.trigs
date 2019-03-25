@@ -1,0 +1,4 @@
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org> { <<<http://example.org/a> ex:b ex:c>> ex:valid "1999-08-16"^^xsd:date . }
