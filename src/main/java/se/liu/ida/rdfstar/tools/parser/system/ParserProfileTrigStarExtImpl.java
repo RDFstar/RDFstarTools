@@ -5,9 +5,7 @@ import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Token;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.FmtUtils;
 import se.liu.ida.rdfstar.tools.parser.tokens.EmbeddedTripleTokenUtils;
 
 /**
