@@ -13,9 +13,9 @@ The command line tools available in this collection are:
 
 ## Java libraries
 The core components of the Java source code of the aforementioned tools are RDF*/SPARQL*-aware extensions for the Apache Jena framework for building RDF-based applications. Hence, the source code in this repository may also be used as a Java library for building RDF*-based and/or SPARQL*-based applications. In particular, the source code contains the following components:
-* [a parser for the Turtle* format](https://github.com/RDFstar/RDFstarTools/blob/master/docs/SPARQLStarParser.md),
+* [a parser for the Turtle* format](https://github.com/RDFstar/RDFstarTools/blob/master/docs/TurtleStarParser.md),
 * [a simple Turtle*-like serializer](https://github.com/RDFstar/RDFstarTools/blob/master/docs/SimpleTurtleStarSerializer.md), and
-* [a parser for SPARQL* queries](https://github.com/RDFstar/RDFstarTools/blob/master/docs/TurtleStarParser.md).
+* [a parser for SPARQL* queries](https://github.com/RDFstar/RDFstarTools/blob/master/docs/SPARQLStarParser.md).
 
 ## Property Graphs?
 For a collection of command line tools and Java libraries that connect the RDF* data model and Property Graphs refer to our [RDFstarPGConnectionTools](https://github.com/RDFstar/RDFstarPGConnectionTools).
