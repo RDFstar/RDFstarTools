@@ -22,7 +22,7 @@ For a collection of command line tools and Java libraries that connect the RDF* 
 
 
 ## Running a conversion from Turtle Star to Turtle
-Have Docker installed then:
+Have Docker installed then at a bash command prompt run:
 ```
 docker run --rm -it -v RDFstarTools_m2:/root/.m2 -v `pwd`:/mnt maven:3.8-jdk-8 /mnt/entry.sh
 ```
