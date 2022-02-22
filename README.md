@@ -1,3 +1,5 @@
+**Attention:** This repo is outdated. The tools in this repo were written for RDF* before [Apache Jena](https://jena.apache.org/) included support for RDF* and now for RDF-star. The conversion as implemented by the tools in this repo is not in line with the semantics of RDF-star as defined in the [RDF-star spec](https://www.w3.org/2021/12/rdf-star.html). Unfortunately, we currently don't have the resources to update and to maintain these tools anymore. For an RDF programming framework for Java that has up-to-date support for RDF-star consider [Apache Jena](https://jena.apache.org/) or [Eclipse RDF4J](https://rdf4j.org/).
+
 # RDFstarTools
 This package provides a collection of command line tools and Java libraries to process RDF* data and SPARQL* queries.
 
